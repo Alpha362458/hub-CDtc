@@ -1,0 +1,12 @@
+这是一个用于识别语种的模型。
+This is a model for language identification.
+Este es un modelo para identificar idiomas.
+Este é um modelo para identificar idiomas.
+これは言語を識別するためのモデルです。
+이것은 언어를 식별하는 모델입니다.
+Это модель для определения языка.
+هذا نموذج للتعرف على اللغة.
+यह भाषा पहचानने का एक मॉडल है।
+นี่คือแบบจำลองสำหรับระบุภาษา
+Đây là mô hình nhận dạng ngôn ngữ.
+Bu bir dil tanımlama modelidir.

@@ -1,0 +1,43 @@
+{
+  "threshold": 0.7617251873016357,
+  "threshold_source": "v12/dev max-softmax 5th percentile",
+  "model_sha256": "b76b2ee7a7098263451702da90dc023ee40b733d858bb1287df412410b1aeac2",
+  "count": 400,
+  "dev_known_retention": 0.95,
+  "test_known_retention": 0.9444444444444444,
+  "unknown_rejection_rate": 0.3475,
+  "by_language": {
+    "bg": {
+      "count": 100,
+      "rejection_rate": 0.0,
+      "mean_confidence": 0.9992308020591736,
+      "accepted_predictions": {
+        "ru": 100
+      }
+    },
+    "el": {
+      "count": 100,
+      "rejection_rate": 1.0,
+      "mean_confidence": 0.5360063910484314,
+      "accepted_predictions": {}
+    },
+    "sw": {
+      "count": 100,
+      "rejection_rate": 0.37,
+      "mean_confidence": 0.8040187358856201,
+      "accepted_predictions": {
+        "en": 30,
+        "tr": 31,
+        "es": 2
+      }
+    },
+    "ur": {
+      "count": 100,
+      "rejection_rate": 0.02,
+      "mean_confidence": 0.9857250452041626,
+      "accepted_predictions": {
+        "ar": 98
+      }
+    }
+  }
+}

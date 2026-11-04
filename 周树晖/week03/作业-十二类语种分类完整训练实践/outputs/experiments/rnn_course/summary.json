@@ -1,0 +1,28 @@
+{
+  "name": "rnn_course",
+  "config": {
+    "name": "rnn_course",
+    "encoder": "rnn",
+    "embed_dim": 64,
+    "hidden_dim": 64,
+    "dropout": 0.3,
+    "layer_norm": true,
+    "batch_size": 64,
+    "lr": 0.001,
+    "weight_decay": 0.0,
+    "epochs": 8,
+    "patience": 0,
+    "scheduler": false
+  },
+  "best_epoch": 8,
+  "epochs_run": 8,
+  "dev_accuracy": 0.9683333333333334,
+  "dev_macro_f1": 0.9685702306738163,
+  "dev_loss": 0.09862316290537516,
+  "parameters": 218892,
+  "training_seconds": 5.648241700022481,
+  "started_at": "2026-10-30T14:49:51+08:00",
+  "finished_at": "2026-10-30T14:49:57+08:00",
+  "checkpoint": "models/rnn_course.pt",
+  "checkpoint_sha256": "fd5206c6217668ed50743ae47182ea8cc7f9c960c937a155b3f4a91cd593a239"
+}

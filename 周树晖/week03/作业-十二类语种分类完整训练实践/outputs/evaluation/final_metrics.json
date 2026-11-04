@@ -1,0 +1,34 @@
+{
+  "count": 1800,
+  "correct": 1740,
+  "errors": 60,
+  "accuracy": 0.9666666666666667,
+  "macro_f1": 0.96697659104712,
+  "macro_f1_labels": [
+    "ar",
+    "en",
+    "es",
+    "hi",
+    "ja",
+    "ko",
+    "pt",
+    "ru",
+    "th",
+    "tr",
+    "vi",
+    "zh"
+  ],
+  "weighted_f1": 0.9669765910471199,
+  "cross_entropy": 0.08753617852926254,
+  "accuracy_wilson_95": [
+    0.9573297085346346,
+    0.9740159991409953
+  ],
+  "evaluated_at": "2026-10-30T14:50:34+08:00",
+  "experiment": "rnn_regularized",
+  "best_epoch": 14,
+  "model_sha256": "b76b2ee7a7098263451702da90dc023ee40b733d858bb1287df412410b1aeac2",
+  "test_sha256": "04f8a238395338aaa456fd39e45e88ba0efa9e02b7a724a2a5b0cba3675592d0",
+  "closed_set": true,
+  "threshold_applied": false
+}

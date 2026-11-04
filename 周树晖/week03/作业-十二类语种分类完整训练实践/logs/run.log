@@ -1,0 +1,59 @@
+Run started 2026-10-30T14:49:48+08:00
+Data ready: train=9600, dev=1200, test=1800; vocab=3276
+
+[rnn_course] 218,892 parameters
+  epoch 01 train_loss=1.0358 dev_loss=0.3852 dev_acc=0.9100 dev_f1=0.9106 lr=0.001000 *
+  epoch 02 train_loss=0.3139 dev_loss=0.2054 dev_acc=0.9383 dev_f1=0.9379 lr=0.001000 *
+  epoch 03 train_loss=0.1974 dev_loss=0.1633 dev_acc=0.9483 dev_f1=0.9485 lr=0.001000 *
+  epoch 04 train_loss=0.1537 dev_loss=0.1439 dev_acc=0.9433 dev_f1=0.9432 lr=0.001000
+  epoch 05 train_loss=0.1310 dev_loss=0.1300 dev_acc=0.9475 dev_f1=0.9484 lr=0.001000
+  epoch 06 train_loss=0.1144 dev_loss=0.1102 dev_acc=0.9667 dev_f1=0.9669 lr=0.001000 *
+  epoch 07 train_loss=0.1014 dev_loss=0.1026 dev_acc=0.9633 dev_f1=0.9639 lr=0.001000
+  epoch 08 train_loss=0.0997 dev_loss=0.0986 dev_acc=0.9683 dev_f1=0.9686 lr=0.001000 *
+
+[rnn_regularized] 218,892 parameters
+  epoch 01 train_loss=1.0308 dev_loss=0.3788 dev_acc=0.9092 dev_f1=0.9098 lr=0.001000 *
+  epoch 02 train_loss=0.3078 dev_loss=0.2073 dev_acc=0.9333 dev_f1=0.9328 lr=0.001000 *
+  epoch 03 train_loss=0.1958 dev_loss=0.1611 dev_acc=0.9500 dev_f1=0.9498 lr=0.001000 *
+  epoch 04 train_loss=0.1515 dev_loss=0.1470 dev_acc=0.9492 dev_f1=0.9496 lr=0.001000
+  epoch 05 train_loss=0.1301 dev_loss=0.1243 dev_acc=0.9500 dev_f1=0.9507 lr=0.001000 *
+  epoch 06 train_loss=0.1176 dev_loss=0.1061 dev_acc=0.9700 dev_f1=0.9702 lr=0.001000 *
+  epoch 07 train_loss=0.1066 dev_loss=0.1041 dev_acc=0.9658 dev_f1=0.9663 lr=0.001000
+  epoch 08 train_loss=0.0962 dev_loss=0.0876 dev_acc=0.9708 dev_f1=0.9710 lr=0.001000 *
+  epoch 09 train_loss=0.0901 dev_loss=0.0998 dev_acc=0.9650 dev_f1=0.9653 lr=0.001000
+  epoch 10 train_loss=0.0822 dev_loss=0.0992 dev_acc=0.9600 dev_f1=0.9606 lr=0.001000
+  epoch 11 train_loss=0.0622 dev_loss=0.0844 dev_acc=0.9742 dev_f1=0.9742 lr=0.000500 *
+  epoch 12 train_loss=0.0568 dev_loss=0.0719 dev_acc=0.9775 dev_f1=0.9775 lr=0.000500 *
+  epoch 13 train_loss=0.0533 dev_loss=0.0799 dev_acc=0.9725 dev_f1=0.9729 lr=0.000500
+  epoch 14 train_loss=0.0508 dev_loss=0.0769 dev_acc=0.9783 dev_f1=0.9783 lr=0.000500 *
+  epoch 15 train_loss=0.0497 dev_loss=0.0768 dev_acc=0.9758 dev_f1=0.9759 lr=0.000500
+  epoch 16 train_loss=0.0477 dev_loss=0.0819 dev_acc=0.9725 dev_f1=0.9726 lr=0.000500
+  epoch 17 train_loss=0.0428 dev_loss=0.0733 dev_acc=0.9717 dev_f1=0.9718 lr=0.000250
+  epoch 18 train_loss=0.0357 dev_loss=0.0783 dev_acc=0.9725 dev_f1=0.9727 lr=0.000250
+
+[lstm_regularized] 243,852 parameters
+  epoch 01 train_loss=0.7848 dev_loss=0.2725 dev_acc=0.9325 dev_f1=0.9336 lr=0.001000 *
+  epoch 02 train_loss=0.2209 dev_loss=0.1641 dev_acc=0.9492 dev_f1=0.9494 lr=0.001000 *
+  epoch 03 train_loss=0.1516 dev_loss=0.1373 dev_acc=0.9542 dev_f1=0.9543 lr=0.001000 *
+  epoch 04 train_loss=0.1241 dev_loss=0.1264 dev_acc=0.9533 dev_f1=0.9543 lr=0.001000 *
+  epoch 05 train_loss=0.1026 dev_loss=0.1279 dev_acc=0.9492 dev_f1=0.9497 lr=0.001000
+  epoch 06 train_loss=0.0876 dev_loss=0.1042 dev_acc=0.9642 dev_f1=0.9641 lr=0.000500 *
+  epoch 07 train_loss=0.0794 dev_loss=0.1004 dev_acc=0.9658 dev_f1=0.9659 lr=0.000500 *
+  epoch 08 train_loss=0.0725 dev_loss=0.0953 dev_acc=0.9675 dev_f1=0.9675 lr=0.000500 *
+  epoch 09 train_loss=0.0675 dev_loss=0.0962 dev_acc=0.9633 dev_f1=0.9634 lr=0.000500
+  epoch 10 train_loss=0.0660 dev_loss=0.0927 dev_acc=0.9667 dev_f1=0.9670 lr=0.000500
+  epoch 11 train_loss=0.0547 dev_loss=0.0899 dev_acc=0.9683 dev_f1=0.9684 lr=0.000250 *
+  epoch 12 train_loss=0.0530 dev_loss=0.0912 dev_acc=0.9675 dev_f1=0.9675 lr=0.000250
+  epoch 13 train_loss=0.0495 dev_loss=0.0895 dev_acc=0.9667 dev_f1=0.9669 lr=0.000250
+  epoch 14 train_loss=0.0430 dev_loss=0.0853 dev_acc=0.9692 dev_f1=0.9691 lr=0.000125 *
+  epoch 15 train_loss=0.0430 dev_loss=0.0865 dev_acc=0.9658 dev_f1=0.9657 lr=0.000125
+  epoch 16 train_loss=0.0403 dev_loss=0.0859 dev_acc=0.9667 dev_f1=0.9668 lr=0.000125
+  epoch 17 train_loss=0.0363 dev_loss=0.0847 dev_acc=0.9692 dev_f1=0.9691 lr=0.000063 *
+  epoch 18 train_loss=0.0381 dev_loss=0.0862 dev_acc=0.9667 dev_f1=0.9667 lr=0.000063
+
+Selected rnn_regularized epoch 14 by dev macro-F1=0.978325
+Final test: 1740/1800 accuracy=0.966667 macro-F1=0.966977
+Hard accuracy: {'short': 0.8783, 'nodeaccent': 0.7817, 'nokana': 0.13}
+Open-set rejection=0.3475 at dev threshold=0.7617
+Report ready: README.md and 8 PNG charts
+Run finished 2026-10-30T14:50:35+08:00

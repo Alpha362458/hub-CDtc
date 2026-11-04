@@ -1,0 +1,156 @@
+{
+  "verified_at": "2026-10-30T15:54:02+08:00",
+  "checks": [
+    {
+      "name": "all Python source files parse",
+      "passed": true
+    },
+    {
+      "name": "selection uses dev only",
+      "passed": true
+    },
+    {
+      "name": "selected model matches best dev result",
+      "passed": true
+    },
+    {
+      "name": "rnn_course checkpoint hash and epoch",
+      "passed": true
+    },
+    {
+      "name": "rnn_course checkpoint is best historical epoch",
+      "passed": true
+    },
+    {
+      "name": "rnn_regularized checkpoint hash and epoch",
+      "passed": true
+    },
+    {
+      "name": "rnn_regularized checkpoint is best historical epoch",
+      "passed": true
+    },
+    {
+      "name": "lstm_regularized checkpoint hash and epoch",
+      "passed": true
+    },
+    {
+      "name": "lstm_regularized checkpoint is best historical epoch",
+      "passed": true
+    },
+    {
+      "name": "final checkpoint matches locked selection",
+      "passed": true
+    },
+    {
+      "name": "vocab rebuilt only from train matches checkpoint",
+      "passed": true
+    },
+    {
+      "name": "12 outputs and correct special tokens",
+      "passed": true
+    },
+    {
+      "name": "NFKC and combining marks preserved",
+      "passed": true
+    },
+    {
+      "name": "unknown characters use UNK",
+      "passed": true
+    },
+    {
+      "name": "padding embedding stays zero",
+      "passed": true
+    },
+    {
+      "name": "right padding cannot change valid pooled logits",
+      "passed": true
+    },
+    {
+      "name": "empty normalized input explicitly rejected",
+      "passed": true
+    },
+    {
+      "name": "added language ko has known characters",
+      "passed": true
+    },
+    {
+      "name": "added language th has known characters",
+      "passed": true
+    },
+    {
+      "name": "added language vi has known characters",
+      "passed": true
+    },
+    {
+      "name": "added language tr has known characters",
+      "passed": true
+    },
+    {
+      "name": "train data hash and no duplicates",
+      "passed": true
+    },
+    {
+      "name": "dev data hash and no duplicates",
+      "passed": true
+    },
+    {
+      "name": "test data hash and no duplicates",
+      "passed": true
+    },
+    {
+      "name": "all formal splits are disjoint",
+      "passed": true
+    },
+    {
+      "name": "all 1800 probability vectors reproduce",
+      "passed": true
+    },
+    {
+      "name": "probabilities sum to one and are finite",
+      "passed": true
+    },
+    {
+      "name": "accuracy recomputed from model",
+      "passed": true
+    },
+    {
+      "name": "macro-F1 recomputed from model",
+      "passed": true
+    },
+    {
+      "name": "confusion counts match all predictions",
+      "passed": true
+    },
+    {
+      "name": "error export matches prediction errors",
+      "passed": true
+    },
+    {
+      "name": "CSV export matches every model prediction",
+      "passed": true
+    },
+    {
+      "name": "all hard samples accounted for",
+      "passed": true
+    },
+    {
+      "name": "open-set threshold derived only from dev",
+      "passed": true
+    },
+    {
+      "name": "all README local links exist",
+      "passed": true
+    },
+    {
+      "name": "README matches final metrics",
+      "passed": true
+    },
+    {
+      "name": "eight nonempty chart files delivered",
+      "passed": true
+    }
+  ],
+  "all_passed": true,
+  "model_sha256": "b76b2ee7a7098263451702da90dc023ee40b733d858bb1287df412410b1aeac2",
+  "sample_count": 1800
+}

@@ -1,0 +1,28 @@
+{
+  "name": "rnn_regularized",
+  "config": {
+    "name": "rnn_regularized",
+    "encoder": "rnn",
+    "embed_dim": 64,
+    "hidden_dim": 64,
+    "dropout": 0.3,
+    "layer_norm": true,
+    "batch_size": 64,
+    "lr": 0.001,
+    "weight_decay": 0.0001,
+    "epochs": 18,
+    "patience": 4,
+    "scheduler": true
+  },
+  "best_epoch": 14,
+  "epochs_run": 18,
+  "dev_accuracy": 0.9783333333333334,
+  "dev_macro_f1": 0.9783248440921389,
+  "dev_loss": 0.07690478801727295,
+  "parameters": 218892,
+  "training_seconds": 12.585427299956791,
+  "started_at": "2026-10-30T14:49:57+08:00",
+  "finished_at": "2026-10-30T14:50:10+08:00",
+  "checkpoint": "models/rnn_regularized.pt",
+  "checkpoint_sha256": "b76b2ee7a7098263451702da90dc023ee40b733d858bb1287df412410b1aeac2"
+}

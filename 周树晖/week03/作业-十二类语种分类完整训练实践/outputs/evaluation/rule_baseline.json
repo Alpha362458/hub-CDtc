@@ -1,0 +1,6 @@
+{
+  "description": "Unicode区段多数票；拉丁字母统一判en",
+  "count": 1800,
+  "accuracy": 0.66,
+  "macro_f1": 0.6046826177393732
+}

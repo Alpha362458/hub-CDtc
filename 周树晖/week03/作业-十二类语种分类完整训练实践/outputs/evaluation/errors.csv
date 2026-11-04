@@ -1,0 +1,61 @@
+﻿text,true_label,predicted_label,confidence,normalized_length,correct
+No one goes to Boston anymore.,en,es,0.9947903156280518,24,False
+Dá na mesma.,pt,es,0.9901300072669983,9,False
+Not a chance!,en,es,0.9761650562286377,10,False
+"Se nos apressarmos, podemos chegar a tempo.",pt,es,0.9583761692047119,35,False
+Onde pôs o jornal de hoje?,pt,es,0.9527542591094971,20,False
+O doğru cevap.,tr,pt,0.9466848969459534,11,False
+I dare say he's not a bad boy.,en,es,0.9228625297546387,21,False
+Cesurdun.,tr,es,0.9070465564727783,8,False
+Está como una cabra.,es,pt,0.9069826602935791,16,False
+Le invité a mi casa.,es,pt,0.8848364353179932,15,False
+Era branco.,pt,es,0.8821039199829102,9,False
+Vá-se embora!,pt,es,0.8680043816566467,10,False
+Comes comida.,es,pt,0.8421739935874939,11,False
+Consentido!,pt,es,0.811500072479248,10,False
+Se lo robamos.,es,pt,0.8028882741928101,11,False
+Es el momento.,es,pt,0.7882845401763916,11,False
+Los gatos son complejos individuos.,es,pt,0.7880563735961914,30,False
+¡Otra vez no!,es,pt,0.7644558548927307,9,False
+졸리면 자면 되잖아.,ko,th,0.7582051753997803,8,False
+Am I talented?,en,es,0.7528306245803833,11,False
+¡Te extrañé!,es,pt,0.7301476001739502,9,False
+Mẹ rắn con rồng.,vi,es,0.7296041250228882,12,False
+Ben oy verdim.,tr,es,0.7292969226837158,11,False
+Abra as malas.,pt,es,0.7226594090461731,11,False
+"Kiwi là quả, Kiwi là chim.",vi,tr,0.7130917310714722,19,False
+Nó cách bao xa?,vi,es,0.7120952606201172,11,False
+O bana uyar.,tr,es,0.7081580758094788,9,False
+Vejo alguém.,pt,es,0.6963917016983032,10,False
+Nam Phi ở rất xa.,vi,en,0.6796151995658875,12,False
+La prisa mata.,es,pt,0.6785988807678223,11,False
+Ela lhe disse para estudar.,pt,en,0.6630023717880249,22,False
+Truth kills.,en,vi,0.6566674113273621,10,False
+My uncle is rich.,en,vi,0.6439022421836853,13,False
+Anh của Shinko 8 tuổi.,vi,en,0.6423442363739014,16,False
+Sabemos nadar.,pt,es,0.6002207398414612,12,False
+Ona telefon etme.,tr,en,0.597419261932373,14,False
+Put some music on.,en,es,0.5800881385803223,14,False
+He became an undercover Muslim.,en,es,0.5739636421203613,26,False
+准备好迎接挑战吧！,zh,ko,0.5643585920333862,8,False
+Buy me a snack.,en,tr,0.554016649723053,11,False
+"Me separé de mi viejo auto, aunque odié hacerlo.",es,pt,0.5499877333641052,38,False
+O ona aitti.,tr,pt,0.5432332754135132,9,False
+Comprobadlo.,es,pt,0.5417191386222839,11,False
+He's a cripple.,en,es,0.5366780161857605,11,False
+Aféitenlos.,es,pt,0.5327654480934143,10,False
+Te he visto.,es,en,0.5321009755134583,9,False
+Lo imagino.,es,pt,0.5275523066520691,9,False
+Ele me persegue.,pt,es,0.5265584588050842,13,False
+Tolere edebilir.,tr,es,0.521159827709198,14,False
+Sé creativa.,es,pt,0.5074906945228577,10,False
+Layla mutilated and killed small animals.,en,tr,0.5010697841644287,35,False
+Feche a caixa.,pt,en,0.5003204345703125,11,False
+ゆっくり、ゆっくり。,ja,th,0.48963093757629395,8,False
+Pare de filmar.,pt,tr,0.4854184687137604,12,False
+Cố mở mắt nhé.,vi,pt,0.4676268398761749,10,False
+"Oh yes, fuck me!",en,es,0.4373724162578583,11,False
+A gente conhece ele.,pt,es,0.4225212335586548,16,False
+Sami is a former defense attorney.,en,es,0.4160945415496826,28,False
+NASA가 최근 새로운 프로젝트를 발표했다.,ko,th,0.4023500382900238,19,False
+Tuve el presentimiento de que algo no iba bien.,es,pt,0.39688533544540405,38,False

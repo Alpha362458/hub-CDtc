@@ -1,0 +1,2 @@
+使用get_v12.py得到vocab_v12.txt
+然后使用lstm模型进行训练

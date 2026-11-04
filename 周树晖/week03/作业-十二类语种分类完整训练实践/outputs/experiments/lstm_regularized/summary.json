@@ -1,0 +1,28 @@
+{
+  "name": "lstm_regularized",
+  "config": {
+    "name": "lstm_regularized",
+    "encoder": "lstm",
+    "embed_dim": 64,
+    "hidden_dim": 64,
+    "dropout": 0.3,
+    "layer_norm": true,
+    "batch_size": 64,
+    "lr": 0.001,
+    "weight_decay": 0.0001,
+    "epochs": 18,
+    "patience": 4,
+    "scheduler": true
+  },
+  "best_epoch": 17,
+  "epochs_run": 18,
+  "dev_accuracy": 0.9691666666666666,
+  "dev_macro_f1": 0.9691227378723685,
+  "dev_loss": 0.0847215223312378,
+  "parameters": 243852,
+  "training_seconds": 23.770781499915756,
+  "started_at": "2026-10-30T14:50:10+08:00",
+  "finished_at": "2026-10-30T14:50:33+08:00",
+  "checkpoint": "models/lstm_regularized.pt",
+  "checkpoint_sha256": "e1734b1a35c5b9c814fd6944eb52e429c5e090fadec441ed7af14716b93e2a13"
+}

@@ -1,0 +1,142 @@
+{
+  "policy": "保留课程原始划分；字符表仅由 train 生成；不使用测试集选择模型",
+  "splits": {
+    "train": {
+      "count": 9600,
+      "class_counts": {
+        "ar": 800,
+        "en": 800,
+        "es": 800,
+        "hi": 800,
+        "ja": 800,
+        "ko": 800,
+        "pt": 800,
+        "ru": 800,
+        "th": 800,
+        "tr": 800,
+        "vi": 800,
+        "zh": 800
+      },
+      "duplicates_after_normalization": 0,
+      "length_min": 8,
+      "length_max": 40,
+      "length_mean": 20.637604166666666,
+      "sha256": "af9c94ff241ace66f73698f1dd1c9cc28cebe26ceba763b29d37cb632b165f81"
+    },
+    "dev": {
+      "count": 1200,
+      "class_counts": {
+        "ar": 100,
+        "en": 100,
+        "es": 100,
+        "hi": 100,
+        "ja": 100,
+        "ko": 100,
+        "pt": 100,
+        "ru": 100,
+        "th": 100,
+        "tr": 100,
+        "vi": 100,
+        "zh": 100
+      },
+      "duplicates_after_normalization": 0,
+      "length_min": 8,
+      "length_max": 40,
+      "length_mean": 20.403333333333332,
+      "sha256": "1121761916cebf214449d4792a2931e9cbe93b9d6e8ce51b00718388fb88e540"
+    },
+    "test": {
+      "count": 1800,
+      "class_counts": {
+        "ar": 150,
+        "en": 150,
+        "es": 150,
+        "hi": 150,
+        "ja": 150,
+        "ko": 150,
+        "pt": 150,
+        "ru": 150,
+        "th": 150,
+        "tr": 150,
+        "vi": 150,
+        "zh": 150
+      },
+      "duplicates_after_normalization": 0,
+      "length_min": 8,
+      "length_max": 40,
+      "length_mean": 21.067222222222224,
+      "sha256": "04f8a238395338aaa456fd39e45e88ba0efa9e02b7a724a2a5b0cba3675592d0"
+    }
+  },
+  "cross_split_overlap": {
+    "train__dev": 0,
+    "train__test": 0,
+    "dev__test": 0
+  },
+  "vocabulary": {
+    "size_including_specials": 3276,
+    "observed_characters": 3274,
+    "pad_id": 0,
+    "unk_id": 1,
+    "coverage": {
+      "train": {
+        "characters": 198121,
+        "unknown_characters": 0,
+        "unknown_rate": 0.0
+      },
+      "dev": {
+        "characters": 24484,
+        "unknown_characters": 109,
+        "unknown_rate": 0.004451886946577357
+      },
+      "test": {
+        "characters": 37921,
+        "unknown_characters": 224,
+        "unknown_rate": 0.005907017220010021
+      }
+    },
+    "sha256": "716baa2a4a498967757da9ab5545f2b8e182793d0f1f5d5b9e78e50c1c42253c"
+  },
+  "diagnostic_sets": {
+    "test_hard": {
+      "count": 1300,
+      "sha256": "3991cae4d1ca3c478fca57b724a65fdae266bda1e2d4bac4aeb88e0fbd576922",
+      "class_counts": {
+        "ar": 50,
+        "en": 170,
+        "es": 170,
+        "hi": 50,
+        "ja": 150,
+        "ko": 50,
+        "pt": 170,
+        "ru": 50,
+        "th": 50,
+        "tr": 170,
+        "vi": 170,
+        "zh": 50
+      },
+      "normalized_overlap": {
+        "train": 0,
+        "dev": 0,
+        "test": 0
+      },
+      "duplicates_after_normalization": 0
+    },
+    "test_openset": {
+      "count": 400,
+      "sha256": "e66cb187c970ecb8265a5c0e4a1b27c221194e37547ea62703bc0fd5fe282507",
+      "class_counts": {
+        "bg": 100,
+        "el": 100,
+        "sw": 100,
+        "ur": 100
+      },
+      "normalized_overlap": {
+        "train": 0,
+        "dev": 0,
+        "test": 0
+      },
+      "duplicates_after_normalization": 0
+    }
+  }
+}

@@ -1,0 +1,214 @@
+{
+  "top_confusions": [
+    {
+      "true": "es",
+      "predicted": "pt",
+      "count": 15
+    },
+    {
+      "true": "pt",
+      "predicted": "es",
+      "count": 11
+    },
+    {
+      "true": "en",
+      "predicted": "es",
+      "count": 9
+    },
+    {
+      "true": "tr",
+      "predicted": "es",
+      "count": 4
+    },
+    {
+      "true": "en",
+      "predicted": "tr",
+      "count": 2
+    },
+    {
+      "true": "en",
+      "predicted": "vi",
+      "count": 2
+    },
+    {
+      "true": "ko",
+      "predicted": "th",
+      "count": 2
+    },
+    {
+      "true": "pt",
+      "predicted": "en",
+      "count": 2
+    },
+    {
+      "true": "tr",
+      "predicted": "pt",
+      "count": 2
+    },
+    {
+      "true": "vi",
+      "predicted": "en",
+      "count": 2
+    },
+    {
+      "true": "vi",
+      "predicted": "es",
+      "count": 2
+    },
+    {
+      "true": "es",
+      "predicted": "en",
+      "count": 1
+    },
+    {
+      "true": "ja",
+      "predicted": "th",
+      "count": 1
+    },
+    {
+      "true": "pt",
+      "predicted": "tr",
+      "count": 1
+    },
+    {
+      "true": "tr",
+      "predicted": "en",
+      "count": 1
+    },
+    {
+      "true": "vi",
+      "predicted": "pt",
+      "count": 1
+    },
+    {
+      "true": "vi",
+      "predicted": "tr",
+      "count": 1
+    },
+    {
+      "true": "zh",
+      "predicted": "ko",
+      "count": 1
+    }
+  ],
+  "by_length": [
+    {
+      "length_range": "8-11",
+      "count": 434,
+      "accuracy": 0.9216589861751152
+    },
+    {
+      "length_range": "12-19",
+      "count": 431,
+      "accuracy": 0.9651972157772621
+    },
+    {
+      "length_range": "20-29",
+      "count": 473,
+      "accuracy": 0.9873150105708245
+    },
+    {
+      "length_range": "30-40",
+      "count": 462,
+      "accuracy": 0.9891774891774892
+    }
+  ],
+  "highest_confidence_errors": [
+    {
+      "text": "No one goes to Boston anymore.",
+      "true_label": "en",
+      "predicted_label": "es",
+      "confidence": 0.9947903156280518,
+      "normalized_length": 24,
+      "correct": false
+    },
+    {
+      "text": "Dá na mesma.",
+      "true_label": "pt",
+      "predicted_label": "es",
+      "confidence": 0.9901300072669983,
+      "normalized_length": 9,
+      "correct": false
+    },
+    {
+      "text": "Not a chance!",
+      "true_label": "en",
+      "predicted_label": "es",
+      "confidence": 0.9761650562286377,
+      "normalized_length": 10,
+      "correct": false
+    },
+    {
+      "text": "Se nos apressarmos, podemos chegar a tempo.",
+      "true_label": "pt",
+      "predicted_label": "es",
+      "confidence": 0.9583761692047119,
+      "normalized_length": 35,
+      "correct": false
+    },
+    {
+      "text": "Onde pôs o jornal de hoje?",
+      "true_label": "pt",
+      "predicted_label": "es",
+      "confidence": 0.9527542591094971,
+      "normalized_length": 20,
+      "correct": false
+    },
+    {
+      "text": "O doğru cevap.",
+      "true_label": "tr",
+      "predicted_label": "pt",
+      "confidence": 0.9466848969459534,
+      "normalized_length": 11,
+      "correct": false
+    },
+    {
+      "text": "I dare say he's not a bad boy.",
+      "true_label": "en",
+      "predicted_label": "es",
+      "confidence": 0.9228625297546387,
+      "normalized_length": 21,
+      "correct": false
+    },
+    {
+      "text": "Cesurdun.",
+      "true_label": "tr",
+      "predicted_label": "es",
+      "confidence": 0.9070465564727783,
+      "normalized_length": 8,
+      "correct": false
+    },
+    {
+      "text": "Está como una cabra.",
+      "true_label": "es",
+      "predicted_label": "pt",
+      "confidence": 0.9069826602935791,
+      "normalized_length": 16,
+      "correct": false
+    },
+    {
+      "text": "Le invité a mi casa.",
+      "true_label": "es",
+      "predicted_label": "pt",
+      "confidence": 0.8848364353179932,
+      "normalized_length": 15,
+      "correct": false
+    },
+    {
+      "text": "Era branco.",
+      "true_label": "pt",
+      "predicted_label": "es",
+      "confidence": 0.8821039199829102,
+      "normalized_length": 9,
+      "correct": false
+    },
+    {
+      "text": "Vá-se embora!",
+      "true_label": "pt",
+      "predicted_label": "es",
+      "confidence": 0.8680043816566467,
+      "normalized_length": 10,
+      "correct": false
+    }
+  ]
+}
