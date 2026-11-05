@@ -1,4 +1,5 @@
 import math
+import sys
 import argparse
 import glob
 import random
@@ -160,10 +161,10 @@ def run_epoch(model, loader, criterion, optimizer, device, train=True):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--model", default="transformer", choices=["transformer"])
-    parser.add_argument("--epochs", type=int, default=10)
+    parser.add_argument("--epochs", type=int, default=20)
     parser.add_argument("--seq_len", type=int, default=64)
     parser.add_argument(
-        "--stride", type=int, default=64, help="切块间隔：1=密集重叠，seq_len=不重叠"
+        "--stride", type=int, default=8, help="切块间隔：1=密集重叠，seq_len=不重叠"
     )
     parser.add_argument("--batch_size", type=int, default=128)
     parser.add_argument("--embed_dim", type=int, default=256)
@@ -190,7 +191,13 @@ def main():
     torch.manual_seed(args.seed)
     random.seed(args.seed)
 
-    # device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    if args.device == "cuda" and not torch.cuda.is_available():
+        parser.error(
+            f"CUDA 不可用：Python={sys.executable}，PyTorch={torch.__version__}。"
+            "请使用安装了 CUDA 版 PyTorch 的 py312 环境。"
+        )
+    if args.device == "mps" and not torch.backends.mps.is_available():
+        parser.error("当前环境不支持 MPS。")
     if args.device != "auto":
         device = torch.device(args.device)
     elif torch.cuda.is_available():
@@ -199,7 +206,13 @@ def main():
         device = torch.device("mps")
     else:
         device = torch.device("cpu")
+    print(f"Python: {sys.executable}")
+    print(f"PyTorch: {torch.__version__}  CUDA build: {torch.version.cuda}")
     print(f"device: {device}  model: {args.model.upper()}")
+    if device.type == "cuda":
+        print(f"GPU: {torch.cuda.get_device_name(device)}")
+    elif args.device == "auto":
+        print("未检测到可用 CUDA，自动使用其他设备；可用 --device cuda 强制检查 GPU。")
 
     if args.epochs < 1:
         parser.error("epochs 必须至少为 1。")
