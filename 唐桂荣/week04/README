@@ -1,0 +1,6 @@
+1. 用 `nn.TransformerEncoderLayer` 和 `nn.TransformerEncoder` 替换 RNN/LSTM。
+2. 增加位置 Embedding，每个样本的位置编号均从 0 开始。
+3. 增加因果掩码，使每个位置只能关注自己和前文，防止训练时利用未来字符。
+4. 最后的线性层输入维度由 RNN 的 `hidden_dim` 改为 Transformer 的 `embed_dim`。
+5. 增加 `--num_heads` 参数；`hidden_dim` 改为表示前馈网络的中间维度。
+6. 验证集不打乱、不丢弃最后一个不足批次大小的 batch；按最低验证 PPL 保存最佳模型。
