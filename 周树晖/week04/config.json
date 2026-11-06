@@ -1,0 +1,21 @@
+{
+  "seed": 42,
+  "vocab_size": 4000,
+  "block_size": 128,
+  "d_model": 192,
+  "n_heads": 4,
+  "n_layers": 4,
+  "d_ff": 768,
+  "dropout": 0.1,
+  "batch_size": 64,
+  "epochs": 12,
+  "patience": 3,
+  "learning_rate": 0.0006,
+  "min_learning_rate": 0.00006,
+  "warmup_steps": 100,
+  "weight_decay": 0.01,
+  "gradient_clip": 1.0,
+  "train_ratio": 0.9,
+  "val_ratio": 0.05,
+  "device": "auto"
+}

@@ -1,0 +1,42 @@
+{
+  "raw_lines": 395286,
+  "empty_lines_removed": 0,
+  "duplicates_removed": 149734,
+  "unique_lines": 245552,
+  "source": "第四周课件/循环神经网络语言模型/corpus_general.txt",
+  "source_sha256": "9b1a534aec3ea892fefa56fd16d48538e93c599e965352fae2455bbc51656acd",
+  "raw_characters": 6021645,
+  "normalization": "NFKC; collapse within-line whitespace; strip; drop empty; exact dedup",
+  "seed": 42,
+  "vocab_size": 4000,
+  "observed_train_characters": 5230,
+  "split_overlap": 0,
+  "splits": {
+    "train": {
+      "sentences": 220996,
+      "characters": 3709092,
+      "predicted_tokens": 3709091,
+      "unknown_tokens": 2531,
+      "unknown_rate": 0.0006823772502812009,
+      "blocks": 28978
+    },
+    "val": {
+      "sentences": 12278,
+      "characters": 204179,
+      "predicted_tokens": 204178,
+      "unknown_tokens": 187,
+      "unknown_rate": 0.0009158630417427845,
+      "blocks": 1596
+    },
+    "test": {
+      "sentences": 12278,
+      "characters": 204816,
+      "predicted_tokens": 204815,
+      "unknown_tokens": 151,
+      "unknown_rate": 0.0007372470900710882,
+      "blocks": 1601
+    }
+  },
+  "vocab_sha256": "4dc25a63d7aa4281b891fd778ad6b0c6e026c87fa233453a6a3850d6b22ca60b",
+  "tokens_sha256": "a8c5e93c292e6e61f0c466c616b408d8591f340e2af4900757ce9854a3d704cc"
+}
