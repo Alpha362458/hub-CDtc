@@ -1,0 +1,18 @@
+device: cuda  model: TransformerLM  amp=True
+gpu: NVIDIA GeForce RTX 4090 Laptop GPU  capability=(8, 9)
+args: {'epochs': 5, 'seq_len': 64, 'stride': 64, 'batch_size': 256, 'd_model': 128, 'nhead': 4, 'num_layers': 2, 'dim_feedforward': 256, 'dropout': 0.1, 'lr': 0.0003, 'val_ratio': 0.05, 'max_vocab': 4000, 'max_train_chars': 0, 'seed': 42, 'device': 'cuda', 'amp': True, 'num_workers': 2, 'corpus': '..\\循环神经网络语言模型\\corpus_general.txt', 'save': 'best_model.pt', 'log': 'train_log.txt', 'report': 'train_report.json'}
+语料字符数: 6,021,645
+词表大小: 4000
+训练样本数: 89,323  验证样本数: 4,706
+模型参数量: 1,358,496
+
+ Epoch  Train Loss   Train PPL    Val Loss     Val PPL
+--------------------------------------------------------
+     1      5.5934      268.64      4.6110      100.58  *
+     2      4.4222       83.28      4.1860       65.76  *
+     3      4.1308       62.23      3.9711       53.04  *
+     4      3.9691       52.94      3.8373       46.40  *
+     5      3.8652       47.71      3.7454       42.33  *
+
+训练完成。最佳验证 PPL: 42.33  已保存至 best_model.pt
+总耗时: 46.7s

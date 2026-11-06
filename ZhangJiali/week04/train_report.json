@@ -1,0 +1,71 @@
+{
+  "model": "TransformerLM",
+  "device": "cuda",
+  "amp": true,
+  "gpu_name": "NVIDIA GeForce RTX 4090 Laptop GPU",
+  "params": 1358496,
+  "vocab_size": 4000,
+  "corpus_chars": 6021645,
+  "best_val_ppl": 42.326705100208045,
+  "elapsed_sec": 46.69127535820007,
+  "args": {
+    "epochs": 5,
+    "seq_len": 64,
+    "stride": 64,
+    "batch_size": 256,
+    "d_model": 128,
+    "nhead": 4,
+    "num_layers": 2,
+    "dim_feedforward": 256,
+    "dropout": 0.1,
+    "lr": 0.0003,
+    "val_ratio": 0.05,
+    "max_vocab": 4000,
+    "max_train_chars": 0,
+    "seed": 42,
+    "device": "cuda",
+    "amp": true,
+    "num_workers": 2,
+    "corpus": "..\\循环神经网络语言模型\\corpus_general.txt",
+    "save": "best_model.pt",
+    "log": "train_log.txt",
+    "report": "train_report.json"
+  },
+  "history": [
+    {
+      "epoch": 1,
+      "train_loss": 5.593376178851073,
+      "train_ppl": 268.64107067272124,
+      "val_loss": 4.610976183713369,
+      "val_ppl": 100.58228851971258
+    },
+    {
+      "epoch": 2,
+      "train_loss": 4.422150552957907,
+      "train_ppl": 83.27518061352497,
+      "val_loss": 4.186028112516067,
+      "val_ppl": 65.76107595867532
+    },
+    {
+      "epoch": 3,
+      "train_loss": 4.130841059246283,
+      "train_ppl": 62.23024024965643,
+      "val_loss": 3.971089674774961,
+      "val_ppl": 53.04229821450484
+    },
+    {
+      "epoch": 4,
+      "train_loss": 3.9691418936882896,
+      "train_ppl": 52.93908398124638,
+      "val_loss": 3.837277147651377,
+      "val_ppl": 46.3989647541984
+    },
+    {
+      "epoch": 5,
+      "train_loss": 3.865160015122644,
+      "train_ppl": 47.71090628842743,
+      "val_loss": 3.7454182130957077,
+      "val_ppl": 42.326705100208045
+    }
+  ]
+}
