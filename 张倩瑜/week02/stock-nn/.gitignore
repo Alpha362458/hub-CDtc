@@ -1,0 +1,3 @@
+__pycache__/
+*.pyc
+data/World-Stock-Prices-Dataset.csv
