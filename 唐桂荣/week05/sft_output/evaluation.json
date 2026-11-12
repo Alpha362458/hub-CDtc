@@ -1,0 +1,114 @@
+{
+  "validation_count": 200,
+  "prefix_check": {
+    "before": {
+      "correct": 0,
+      "total": 200,
+      "rate": 0.0
+    },
+    "after": {
+      "correct": 200,
+      "total": 200,
+      "rate": 1.0
+    }
+  },
+  "examples": [
+    {
+      "instruction": "比较两个数字，输出较大的数：17和42。",
+      "exact_match_in_training": false,
+      "before": {
+        "text": "你们的心情，你是什么意思\n这个是什么牌子的香水？\n这个是什么牌子的香水？\n怎么牌子的电脑筋急\n怎么牌子的电脑筋急\n怎么牌子的电脑筋急\n怎么牌子的电脑筋急\n怎么牌",
+        "ended_with_eos": false,
+        "unknown_prompt_chars": 0
+      },
+      "after": {
+        "text": "结论：最大的数字是12。",
+        "ended_with_eos": true,
+        "unknown_prompt_chars": 0
+      }
+    },
+    {
+      "instruction": "计算9加6的结果。",
+      "exact_match_in_training": false,
+      "before": {
+        "text": "你是我的眼神\n怎么样才能让胡子长得慢点\n怎么样才能让胡子长得慢点\n怎么样才能让胡子长得慢点\n怎么样才能让胡子长得快一个人的女人不吃了我的人的人的人的心情人的人的",
+        "ended_with_eos": false,
+        "unknown_prompt_chars": 0
+      },
+      "after": {
+        "text": "结论：25的结果是15。",
+        "ended_with_eos": true,
+        "unknown_prompt_chars": 0
+      }
+    },
+    {
+      "instruction": "请用一句话解释什么是机器学习。",
+      "exact_match_in_training": false,
+      "before": {
+        "text": "你是我的眼睛，你是什么意思\n怎么样才能让胡子长得慢点\n怎么样才能让胡子长得慢点\n这个是什么样的女人\n怎么样的女人不会不会不会不爱我的，我\n我\n我\n我\n我的你，我",
+        "ended_with_eos": false,
+        "unknown_prompt_chars": 0
+      },
+      "after": {
+        "text": "结论：将一个机器学习，将等式两边减去以2x=1，得到x=2x=1，得到x=x=2，得到x=2x=2x=2=2，然后除以2得到x=2x=2x=2x=2=2x=2=",
+        "ended_with_eos": false,
+        "unknown_prompt_chars": 0
+      }
+    },
+    {
+      "instruction": "把英文单词apple翻译成中文。",
+      "exact_match_in_training": false,
+      "before": {
+        "text": "你是我的眼睛\n怎么样才能让胡子长得慢点\n怎么样才能让胡子长得慢点\n怎么样才能让胡子长得慢点长得慢点\n怎么办\n怎么样才能让胡子长得快点长得快点\n怎么办\n怎么办\n怎",
+        "ended_with_eos": false,
+        "unknown_prompt_chars": 0
+      },
+      "after": {
+        "text": "结论：\"cadididid\" \" \" \" \" \" \" \" \" \" \" \" \" \" \" \" \" \" \" \" \" \" \" \" \" \" \" \" \" \" \" \" \" \"",
+        "ended_with_eos": false,
+        "unknown_prompt_chars": 0
+      }
+    },
+    {
+      "instruction": "请列出三种水果。",
+      "exact_match_in_training": false,
+      "before": {
+        "text": "你们的心情，你是什么意思\n怎么样才能让胡子长得慢点\n怎么样才能让胡子长得慢点\n这个是什么牌子的香水？怎么牌子的\n怎么牌子的香水果\n怎么牌子的\n怎么牌子的\n怎么牌",
+        "ended_with_eos": false,
+        "unknown_prompt_chars": 0
+      },
+      "after": {
+        "text": "结论：1. 水果，2. 水果，3. 水果，3. 水果，5. 水果 水果 - 水果 - - - - - - - - - - - - - - - - - - - -",
+        "ended_with_eos": false,
+        "unknown_prompt_chars": 0
+      }
+    }
+  ],
+  "training_summary": {
+    "baseline": {
+      "answer_loss": 5.130779853601181,
+      "answer_ppl": 169.14897806212764,
+      "supervised_tokens": 6392,
+      "prefix_accuracy": {
+        "correct": 0,
+        "total": 20,
+        "rate": 0.0
+      }
+    },
+    "best_epoch": {
+      "answer_loss": 2.409548638908377,
+      "answer_ppl": 11.128936842181494,
+      "supervised_tokens": 6392,
+      "epoch": 10,
+      "global_step": 1880,
+      "train_answer_loss": 1.891796875602606,
+      "elapsed_seconds": 7.83,
+      "prefix_accuracy": {
+        "correct": 20,
+        "total": 20,
+        "rate": 1.0
+      }
+    },
+    "epoch_seconds_total": 80.72
+  }
+}
