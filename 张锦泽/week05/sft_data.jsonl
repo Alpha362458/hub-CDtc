@@ -1,0 +1,20 @@
+{"instruction": "什么是 Python？", "input": "", "output": "Python 是一种高级编程语言，常用于数据分析、自动化和人工智能开发。"}
+{"instruction": "什么是深度学习？", "input": "", "output": "深度学习是机器学习的一个分支，它使用多层神经网络从数据中学习特征和规律。"}
+{"instruction": "解释什么是 Transformer。", "input": "", "output": "Transformer 是一种基于注意力机制的神经网络架构，能够学习序列中不同位置之间的关系。"}
+{"instruction": "什么是 SFT？", "input": "", "output": "SFT 是监督微调，通过带有标准答案的指令数据训练预训练模型，使模型学会按照指令完成任务。"}
+{"instruction": "什么是 Token？", "input": "", "output": "Token 是文本经过分词器处理后得到的基本单位，可以是一个字、词或子词。"}
+{"instruction": "什么是 Embedding？", "input": "", "output": "Embedding 是把离散的 Token 映射成连续数值向量的过程。"}
+{"instruction": "什么是前向传播？", "input": "", "output": "前向传播是输入数据经过神经网络各层计算，最终得到模型预测结果的过程。"}
+{"instruction": "什么是反向传播？", "input": "", "output": "反向传播根据损失函数计算各个参数的梯度，为优化器更新模型参数提供依据。"}
+{"instruction": "Loss 的作用是什么？", "input": "", "output": "Loss 用于衡量模型预测结果与目标答案之间的差异，训练目标通常是降低 Loss。"}
+{"instruction": "什么是优化器？", "input": "", "output": "优化器根据模型参数的梯度调整参数，从而逐步降低训练损失。"}
+{"instruction": "解释 Attention 机制。", "input": "", "output": "Attention 机制根据输入内容计算不同位置的重要程度，再对信息进行加权整合。"}
+{"instruction": "什么是过拟合？", "input": "", "output": "过拟合是模型过度记住训练数据，导致训练集表现较好但面对新数据时表现较差的现象。"}
+{"instruction": "训练集和验证集有什么区别？", "input": "", "output": "训练集用于计算损失并更新模型参数，验证集用于评估模型在未参与参数更新的数据上的表现。"}
+{"instruction": "什么是 Batch Size？", "input": "", "output": "Batch Size 表示一次训练迭代中送入模型的样本数量。"}
+{"instruction": "什么是 Epoch？", "input": "", "output": "Epoch 表示模型完整遍历一次训练集。"}
+{"instruction": "什么是学习率？", "input": "", "output": "学习率控制优化器每次更新模型参数的步长。"}
+{"instruction": "什么是语言模型？", "input": "", "output": "语言模型学习文本序列的规律，并根据已有上下文预测后续 Token。"}
+{"instruction": "什么是生成式模型？", "input": "", "output": "生成式模型学习数据的分布，并能够根据输入条件生成新的数据。"}
+{"instruction": "为什么 SFT 需要指令和回答？", "input": "", "output": "指令描述模型需要完成的任务，回答提供期望输出，二者组成监督样本。"}
+{"instruction": "如何判断模型是否训练得更好？", "input": "", "output": "可以观察训练集和验证集的 Loss 变化，并使用独立测试数据检查模型生成结果的质量。"}
