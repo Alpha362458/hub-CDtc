@@ -1,0 +1,5 @@
+# 训练与评估的生成物，不进版本库（重新训练/评估即可复现）
+*.pt
+history.json
+eval_report/
+__pycache__/

@@ -1,0 +1,442 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Transformer LM 分析看板</title>
+<style>
+  /* ── 色彩令牌：浅色为默认，深色经 media query 与 data-theme 两路覆盖 ── */
+  :root {
+    color-scheme: light;
+    --page: #f9f9f7;
+    --surface: #fcfcfb;
+    --ink-1: #0b0b0b;
+    --ink-2: #52514e;
+    --ink-muted: #898781;
+    --grid: #e1e0d9;
+    --baseline: #c3c2b7;
+    --border: rgba(11,11,11,0.10);
+    --series-1: #2a78d6;   /* train / 主系列 */
+    --series-2: #eb6834;   /* val / 次系列 */
+    --accent: #2a78d6;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:where(:not([data-theme="light"])) {
+      color-scheme: dark;
+      --page: #0d0d0d; --surface: #1a1a19;
+      --ink-1: #f0efec; --ink-2: #c3c2b7; --ink-muted: #898781;
+      --grid: #2c2c2a; --baseline: #383835;
+      --border: rgba(255,255,255,0.10);
+      --series-1: #3987e5; --series-2: #d95926;
+      --accent: #3987e5;
+    }
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --page: #0d0d0d; --surface: #1a1a19;
+    --ink-1: #f0efec; --ink-2: #c3c2b7; --ink-muted: #898781;
+    --grid: #2c2c2a; --baseline: #383835;
+    --border: rgba(255,255,255,0.10);
+    --series-1: #3987e5; --series-2: #d95926;
+    --accent: #3987e5;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--page); color: var(--ink-1);
+    font: 14px/1.6 system-ui, -apple-system, "Segoe UI", sans-serif;
+  }
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 24px 20px 60px; }
+
+  header { display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
+  h1 { font-size: 20px; margin: 0; }
+  .sub { color: var(--ink-2); font-size: 13px; }
+  #themeBtn {
+    border: 1px solid var(--border); background: var(--surface); color: var(--ink-2);
+    border-radius: 8px; padding: 4px 12px; cursor: pointer; font-size: 12px;
+  }
+
+  .tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin: 20px 0; }
+  .tile { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; }
+  .tile .label { color: var(--ink-2); font-size: 12px; }
+  .tile .value { font-size: 26px; font-weight: 600; margin-top: 2px; }
+  .tile .value.small { font-size: 18px; }
+  .tile.hero .value { font-size: 34px; }
+
+  section { margin: 30px 0; }
+  h2 { font-size: 15px; margin: 0 0 4px; }
+  .desc { color: var(--ink-2); font-size: 12.5px; margin: 0 0 12px; max-width: 760px; }
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 16px; }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  @media (max-width: 860px) { .grid2 { grid-template-columns: 1fr; } }
+
+  .chart { position: relative; }
+  .chart svg { display: block; width: 100%; height: auto; }
+  .legend { display: flex; gap: 16px; font-size: 12px; color: var(--ink-2); margin-bottom: 6px; }
+  .legend .key { display: inline-block; width: 14px; height: 3px; border-radius: 2px; vertical-align: middle; margin-right: 5px; }
+  .tooltip {
+    position: absolute; pointer-events: none; display: none; z-index: 5;
+    background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
+    padding: 6px 10px; font-size: 12px; color: var(--ink-1); box-shadow: 0 2px 10px rgba(0,0,0,.12);
+    white-space: nowrap;
+  }
+  .tooltip .k { color: var(--ink-2); }
+  .tooltip .dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 5px; }
+
+  details.tbl { margin-top: 10px; font-size: 12px; color: var(--ink-2); }
+  details.tbl summary { cursor: pointer; }
+  details.tbl table { border-collapse: collapse; margin-top: 6px; }
+  details.tbl th, details.tbl td { border-bottom: 1px solid var(--grid); padding: 3px 12px 3px 0; text-align: right; font-variant-numeric: tabular-nums; }
+  details.tbl th:first-child, details.tbl td:first-child { text-align: left; }
+
+  .segBtns { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
+  .segBtns button {
+    border: 1px solid var(--border); background: var(--surface); color: var(--ink-2);
+    border-radius: 8px; padding: 3px 10px; font-size: 12px; cursor: pointer;
+  }
+  .segBtns button.on { border-color: var(--accent); color: var(--ink-1); font-weight: 600; }
+  .heatwrap { overflow-x: auto; }
+  #heatCanvas { display: block; }
+  .heatlegend { display: flex; align-items: center; gap: 8px; font-size: 11px; color: var(--ink-muted); margin-top: 8px; }
+
+  .samplegrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  @media (max-width: 860px) { .samplegrid { grid-template-columns: 1fr; } }
+  .sample h3 { margin: 0 0 8px; font-size: 13px; color: var(--ink-2); font-weight: 600; }
+  .sample .txt {
+    background: var(--page); border: 1px solid var(--border); border-radius: 8px;
+    padding: 10px 12px; font-size: 13px; line-height: 1.9; word-break: break-all;
+  }
+  .sample .txt b { color: var(--accent); font-weight: 600; }
+
+  .case { margin-bottom: 14px; }
+  .case .py { font-weight: 600; }
+  .case .segs { margin: 4px 0 8px; display: flex; flex-wrap: wrap; gap: 6px; }
+  .chip {
+    border: 1px solid var(--border); border-radius: 999px; padding: 1px 10px;
+    font-size: 12px; color: var(--ink-2);
+  }
+  .cands { display: flex; flex-wrap: wrap; gap: 8px; }
+  .cand {
+    background: var(--page); border: 1px solid var(--border); border-radius: 8px;
+    padding: 5px 12px; font-size: 14px; display: flex; gap: 8px; align-items: baseline;
+  }
+  .cand .rank { color: var(--ink-muted); font-size: 11px; }
+  .cand .score { color: var(--ink-muted); font-size: 11px; font-variant-numeric: tabular-nums; }
+  .cand.top { border-color: var(--accent); }
+
+  #err { display: none; background: #fbeaea; color: #8c2f2f; border: 1px solid #e5bcbc;
+         border-radius: 10px; padding: 12px 16px; margin: 16px 0; }
+  footer { color: var(--ink-muted); font-size: 12px; margin-top: 40px; border-top: 1px solid var(--grid); padding-top: 12px; }
+  code { background: var(--page); border: 1px solid var(--border); border-radius: 5px; padding: 0 5px; font-size: 12px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <h1>Transformer 字符级语言模型 · 分析看板</h1>
+      <div class="sub" id="subTitle">加载中…</div>
+    </div>
+    <button id="themeBtn">🌓 主题</button>
+  </header>
+
+  <div id="err"></div>
+
+  <div class="tiles" id="tiles"></div>
+
+  <section>
+    <h2>训练曲线</h2>
+    <p class="desc">左：训练 / 验证 loss（同一单位同一坐标轴）；右：验证 PPL（e^loss，越低越好）。
+      验证曲线高于训练曲线的差距即过拟合程度。</p>
+    <div class="grid2">
+      <div class="card"><div class="chart" id="lossChart"></div></div>
+      <div class="card"><div class="chart" id="pplChart"></div></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>序列位置 × 预测难度</h2>
+    <p class="desc">验证集上"窗口内第 t 个位置"的平均 loss：位置越靠后，可供参考的上文越长，
+      预测应当越准。这条曲线下降越明显，说明模型越多地利用了上下文 —— 语言模型的核心价值所在。</p>
+    <div class="card"><div class="chart" id="posChart"></div></div>
+  </section>
+
+  <section>
+    <h2>注意力可视化</h2>
+    <p class="desc">每格颜色 = 行字对列字的注意力权重（行预测下一字时看向列的程度，一行为一句子内的注意力分布）。
+      切换层与视角：低层常呈现"盯相邻字"的局部对角线模式，高层更分散、更语义化；
+      avg 为所有头平均，head0 为单头视角（个别头模式更鲜明）。</p>
+    <div class="card">
+      <div class="segBtns" id="attnLayerBtns"></div>
+      <div class="segBtns" id="attnModeBtns"></div>
+      <div class="heatwrap"><canvas id="heatCanvas"></canvas></div>
+      <div class="heatlegend">
+        <span>0</span><canvas id="heatLegend" width="160" height="10"></canvas><span id="heatMax">1.0</span>
+      </div>
+      <div class="tooltip" id="heatTip"></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>生成样例</h2>
+    <p class="desc">同一提示在不同温度下的自回归续写（top_k=8）：低温保守复读常见搭配，高温更随机也更容易胡说。</p>
+    <div class="samplegrid" id="samples"></div>
+  </section>
+
+  <section>
+    <h2>拼音输入法转换对照</h2>
+    <p class="desc">束搜索候选按语言模型累计 log 概率排序（得分越高越像人话）。
+      切分一栏展示枚举到的多种读音 —— 歧义交给语言模型裁决，这正是它相对于固定词典的地方。</p>
+    <div class="card" id="pinyinCases"></div>
+  </section>
+
+  <footer>
+    数据来自 <code>eval_report/</code>（由 <code>python evaluate.py</code> 生成）·
+    重新训练：<code>python train.py</code> · 本页由 <code>python server.py</code> 提供服务
+  </footer>
+</div>
+
+<script>
+"use strict";
+
+/* ── 通用工具 ── */
+const $ = (id) => document.getElementById(id);
+const fmt = (v, d = 2) => (v == null ? "—" : Number(v).toFixed(d));
+const fmtK = (v) => v >= 1e6 ? (v / 1e6).toFixed(2) + "M" : v >= 1e3 ? (v / 1e3).toFixed(1) + "K" : String(v);
+
+function esc(s) { const d = document.createElement("div"); d.textContent = s; return d.innerHTML; }
+
+/* 顺序色带（浅→深，蓝系 100→700 档），t∈[0,1] 插值 */
+const RAMP = ["#cde2fb","#9ec5f4","#6da7ec","#5598e7","#3987e5","#256abf","#184f95","#0d366b"];
+function rampColor(t) {
+  t = Math.max(0, Math.min(1, t));
+  const x = t * (RAMP.length - 1), i = Math.min(Math.floor(x), RAMP.length - 2), f = x - i;
+  const a = RAMP[i], b = RAMP[i + 1];
+  const c = (h) => [parseInt(h.slice(1,3),16), parseInt(h.slice(3,5),16), parseInt(h.slice(5,7),16)];
+  const [r1,g1,b1] = c(a), [r2,g2,b2] = c(b);
+  return `rgb(${Math.round(r1+(r2-r1)*f)},${Math.round(g1+(g2-g1)*f)},${Math.round(b1+(b2-b1)*f)})`;
+}
+
+/* ── 折线图：SVG + 悬停十字线 + 提示 ── */
+function lineChart(container, opts) {
+  const { series, xLabels, yFmt = (v) => fmt(v), width = 460, height = 240 } = opts;
+  const m = { t: 12, r: 44, b: 26, l: 40 };
+  const W = width, H = height;
+
+  const ys = series.flatMap(s => s.points);
+  let yMin = Math.min(...ys), yMax = Math.max(...ys);
+  if (yMax - yMin < 1e-9) yMax = yMin + 1;
+  const pad = (yMax - yMin) * 0.08;
+  yMin -= pad; yMax += pad;
+  const n = series[0].points.length;
+  const x = (i) => m.l + (i / Math.max(1, n - 1)) * (W - m.l - m.r);
+  const y = (v) => H - m.b - ((v - yMin) / (yMax - yMin)) * (H - m.t - m.b);
+
+  const ticks = 4, gridLines = [];
+  for (let k = 0; k <= ticks; k++) {
+    const v = yMin + (yMax - yMin) * k / ticks;
+    gridLines.push(`<line x1="${m.l}" x2="${W - m.r}" y1="${y(v)}" y2="${y(v)}" stroke="var(--grid)" stroke-width="1"/>` +
+      `<text x="${m.l - 6}" y="${y(v) + 4}" text-anchor="end" font-size="10" fill="var(--ink-muted)">${yFmt(v)}</text>`);
+  }
+  const xTickEvery = Math.max(1, Math.ceil(n / 7));
+  const xTicks = xLabels.map((l, i) => i % xTickEvery === 0 || i === n - 1
+    ? `<text x="${x(i)}" y="${H - 8}" text-anchor="middle" font-size="10" fill="var(--ink-muted)">${esc(l)}</text>` : "").join("");
+
+  const paths = series.map(s =>
+    `<path d="${s.points.map((v, i) => (i ? "L" : "M") + x(i).toFixed(1) + " " + y(v).toFixed(1)).join(" ")}"
+       fill="none" stroke="${s.color}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>`).join("");
+
+  /* 终点标记：2px 表面色描边圈 + 终值直标（选择性标注：只标最后一个点） */
+  const endDots = series.map(s => {
+    const i = n - 1, v = s.points[i];
+    return `<circle cx="${x(i)}" cy="${y(v)}" r="4" fill="${s.color}" stroke="var(--surface)" stroke-width="2"/>` +
+      `<text x="${x(i) + 8}" y="${y(v) + 4}" font-size="10.5" fill="var(--ink-2)">${yFmt(v)}</text>`;
+  }).join("");
+
+  container.innerHTML =
+    (series.length > 1 ? `<div class="legend">${series.map(s =>
+      `<span><span class="key" style="background:${s.color}"></span>${esc(s.name)}</span>`).join("")}</div>` : "") +
+    `<svg viewBox="0 0 ${W} ${H}">${gridLines.join("")}${xTicks}${paths}${endDots}
+      <line x1="${m.l}" x2="${W - m.r}" y1="${H - m.b}" y2="${H - m.b}" stroke="var(--baseline)" stroke-width="1"/>
+      <line class="crosshair" x1="0" x2="0" y1="${m.t}" y2="${H - m.b}" stroke="var(--baseline)" stroke-width="1" opacity="0"/>
+      ${series.map(s => `<circle class="hoverdot" r="4" fill="${s.color}" stroke="var(--surface)" stroke-width="2" opacity="0"/>`).join("")}
+    </svg><div class="tooltip"></div>`;
+
+  const svg = container.querySelector("svg"), tip = container.querySelector(".tooltip");
+  const cross = container.querySelector(".crosshair"), hdots = container.querySelectorAll(".hoverdot");
+  svg.addEventListener("mousemove", (ev) => {
+    const r = svg.getBoundingClientRect();
+    const px = (ev.clientX - r.left) * (W / r.width);
+    const i = Math.max(0, Math.min(n - 1, Math.round((px - m.l) / (W - m.l - m.r) * (n - 1))));
+    cross.setAttribute("x1", x(i)); cross.setAttribute("x2", x(i)); cross.setAttribute("opacity", "0.6");
+    hdots.forEach((d, si) => {
+      d.setAttribute("cx", x(i)); d.setAttribute("cy", y(series[si].points[i])); d.setAttribute("opacity", "1");
+    });
+    tip.style.display = "block";
+    tip.innerHTML = `<div class="k">${esc(xLabels[i])}</div>` + series.map(s =>
+      `<div><span class="dot" style="background:${s.color}"></span>${esc(s.name)} ${yFmt(s.points[i])}</div>`).join("");
+    const tipX = Math.min(Math.max(ev.clientX - r.left + 14, 0), r.width - 130);
+    tip.style.left = tipX + "px"; tip.style.top = "8px";
+  });
+  svg.addEventListener("mouseleave", () => {
+    tip.style.display = "none"; cross.setAttribute("opacity", "0");
+    hdots.forEach(d => d.setAttribute("opacity", "0"));
+  });
+}
+
+function tableFor(container, headers, rows) {
+  const tbl = document.createElement("details");
+  tbl.className = "tbl";
+  tbl.innerHTML = `<summary>数据表</summary><table><thead><tr>${headers.map(h => `<th>${h}</th>`).join("")}</tr></thead>` +
+    `<tbody>${rows.map(r => `<tr>${r.map(c => `<td>${c}</td>`).join("")}</tr>`).join("")}</tbody></table>`;
+  container.appendChild(tbl);
+}
+
+/* ── 注意力热力图：canvas 顺序色带 + 格悬停提示 ── */
+let attn = null, attnLayer = 0, attnMode = "avg";
+function renderHeatmap() {
+  const cv = $("heatCanvas"), ctx = cv.getContext("2d");
+  const chars = attn.chars, T = chars.length;
+  const layer = attn.layers[String(attnLayer)][attnMode];
+  const vMax = Math.max(...layer.flat());
+  const cell = Math.max(11, Math.min(22, Math.floor(760 / T)));
+  const mL = 22, mT = 20;
+  cv.width = mL + cell * T + 4; cv.height = mT + cell * T + 4;
+  cv.style.maxWidth = "100%";
+  ctx.font = "11px system-ui"; ctx.textAlign = "center"; ctx.textBaseline = "middle";
+  for (let i = 0; i < T; i++) {
+    ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue("--ink-muted");
+    ctx.fillText(chars[i], mL + i * cell + cell / 2, 8);
+    ctx.fillText(chars[i], 10, mT + i * cell + cell / 2);
+    for (let j = 0; j < T; j++) {
+      ctx.fillStyle = rampColor(layer[i][j] / vMax);
+      ctx.fillRect(mL + j * cell, mT + i * cell, cell - 1, cell - 1);  /* 1px 表面缝隙分隔 */
+    }
+  }
+  const lg = $("heatLegend").getContext("2d");
+  for (let k = 0; k < 160; k++) { lg.fillStyle = rampColor(k / 159); lg.fillRect(k, 0, 1, 10); }
+  $("heatMax").textContent = vMax.toFixed(2);
+
+  cv.onmousemove = (ev) => {
+    const r = cv.getBoundingClientRect();
+    const px = (ev.clientX - r.left) * (cv.width / r.width), py = (ev.clientY - r.top) * (cv.height / r.height);
+    const j = Math.floor((px - mL) / cell), i = Math.floor((py - mT) / cell);
+    const tip = $("heatTip");
+    if (i >= 0 && i < T && j >= 0 && j < T) {
+      tip.style.display = "block";
+      tip.innerHTML = `「${chars[i]}」预测下一字时看向「${chars[j]}」<br><span class="k">注意力 ${layer[i][j].toFixed(3)}` +
+        `（行最大 ${layer[i].reduce((a, b) => Math.max(a, b), 0).toFixed(3)}）</span>`;
+      const card = cv.closest(".card").getBoundingClientRect();
+      tip.style.left = Math.min(ev.clientX - card.left + 14, card.width - 190) + "px";
+      tip.style.top = (ev.clientY - card.top - 10) + "px";
+    } else tip.style.display = "none";
+  };
+  cv.onmouseleave = () => { $("heatTip").style.display = "none"; };
+}
+
+/* ── 页面组装 ── */
+async function main() {
+  let report;
+  try {
+    const [rp, at] = await Promise.all([fetch("/api/eval").then(r => r.json()), fetch("/api/attention").then(r => r.json())]);
+    report = rp; attn = at;
+  } catch (e) {
+    $("err").style.display = "block";
+    $("err").textContent = "读取评估数据失败：请先运行 python evaluate.py 生成 eval_report/，再通过 python server.py 打开本页。";
+    return;
+  }
+  const c = report.config, mt = report.metrics, h = report.history;
+
+  $("subTitle").textContent =
+    `${c.impl === "handwritten" ? "手写实现" : "官方 API 实现"} · d_model ${c.d_model} · ${c.num_layers} 层 × ${c.nhead} 头 · 前馈 ${c.ff_dim} · 窗口 ${c.seq_len} 字 · 语料 ${fmtK(c.corpus_chars)} 字`;
+
+  $("tiles").innerHTML = [
+    { cls: "hero", label: "最佳验证 PPL", value: fmt(mt.best_val_ppl_in_history ?? mt.val_ppl) },
+    { label: "验证 loss", value: fmt(mt.val_loss, 4) },
+    { label: "参数量", value: fmtK(c.total_params) },
+    { label: "词表大小", value: c.vocab_size },
+    { label: "每轮耗时", value: h.length ? (h.reduce((a, b) => a + b.sec, 0) / h.length).toFixed(1) + " s" : "—" },
+  ].map(t => `<div class="tile ${t.cls || ""}"><div class="label">${t.label}</div><div class="value ${t.cls ? "" : "small"}">${t.value}</div></div>`).join("");
+
+  if (h.length) {
+    lineChart($("lossChart"), {
+      series: [
+        { name: "训练 loss", color: "var(--series-1)", points: h.map(r => r.train_loss) },
+        { name: "验证 loss", color: "var(--series-2)", points: h.map(r => r.val_loss) },
+      ],
+      xLabels: h.map(r => "E" + r.epoch),
+    });
+    tableFor($("lossChart").parentElement, ["Epoch", "Train Loss", "Val Loss", "Val PPL", "耗时(s)"],
+      h.map(r => [r.epoch, fmt(r.train_loss, 4), fmt(r.val_loss, 4), fmt(r.val_ppl), r.sec]));
+
+    lineChart($("pplChart"), {
+      series: [{ name: "验证 PPL", color: "var(--series-2)", points: h.map(r => r.val_ppl) }],
+      xLabels: h.map(r => "E" + r.epoch),
+      yFmt: (v) => fmtK(Math.round(v)),
+    });
+  }
+
+  lineChart($("posChart"), {
+    series: [{ name: "位置平均 loss", color: "var(--series-1)", points: report.position_loss }],
+    xLabels: report.position_loss.map((_, i) => String(i + 1)),
+  });
+  tableFor($("posChart").parentElement, ["窗口位置", "平均 loss"],
+    report.position_loss.map((v, i) => [i + 1, fmt(v, 3)]).filter((_, i) => i % 8 === 0 || i === report.position_loss.length - 1));
+
+  const nLayers = Object.keys(attn.layers).length;
+  $("attnLayerBtns").innerHTML = Array.from({ length: nLayers }, (_, i) =>
+    `<button data-l="${i}" class="${i === 0 ? "on" : ""}">第 ${i} 层</button>`).join("");
+  $("attnModeBtns").innerHTML =
+    `<button data-m="avg" class="on">头平均</button><button data-m="head0">head 0</button>`;
+  $("attnLayerBtns").onclick = (e) => {
+    const b = e.target.closest("button"); if (!b) return;
+    attnLayer = +b.dataset.l;
+    $("attnLayerBtns").querySelectorAll("button").forEach(x => x.classList.toggle("on", x === b));
+    renderHeatmap();
+  };
+  $("attnModeBtns").onclick = (e) => {
+    const b = e.target.closest("button"); if (!b) return;
+    attnMode = b.dataset.m;
+    $("attnModeBtns").querySelectorAll("button").forEach(x => x.classList.toggle("on", x === b));
+    renderHeatmap();
+  };
+  renderHeatmap();
+
+  const byTemp = {};
+  for (const s of report.samples) (byTemp[s.temperature] = byTemp[s.temperature] || []).push(s);
+  $("samples").innerHTML = Object.entries(byTemp).sort((a, b) => a[0] - b[0]).map(([temp, items]) =>
+    `<div class="card sample"><h3>temperature ${temp}</h3>` + items.map(s => {
+      const body = esc(s.text.slice(s.prompt.length));
+      const head = esc(s.text.slice(0, s.prompt.length));
+      return `<div class="txt"><b>${head}</b>${body}</div>`;
+    }).join("") + "</div>").join("");
+
+  $("pinyinCases").innerHTML = report.pinyin_cases.map(cs => {
+    const segChips = cs.segmentations.length > 1
+      ? `<div class="segs">切分：${cs.segmentations.slice(0, 4).map(s =>
+          `<span class="chip">${esc(s.join("·"))}</span>`).join("")}` +
+        (cs.segmentations.length > 4 ? `<span class="chip">+${cs.segmentations.length - 4} 种</span>` : "") + "</div>"
+      : "";
+    const cands = cs.results.map(([score, text], i) =>
+      `<div class="cand ${i === 0 ? "top" : ""}"><span class="rank">#${i + 1}</span>${esc(text)}<span class="score">${fmt(score)}</span></div>`).join("");
+    return `<div class="case"><span class="py">${esc(cs.pinyin)}</span>${segChips}<div class="cands">${cands}</div></div>`;
+  }).join("");
+}
+
+/* 主题切换：三态 循环（跟随系统 → 浅 → 深） */
+const themeBtn = $("themeBtn");
+const themeStates = ["", "light", "dark"], themeNames = { "": "🌓 跟随系统", light: "☀️ 浅色", dark: "🌙 深色" };
+let themeIdx = 0;
+themeBtn.onclick = () => {
+  themeIdx = (themeIdx + 1) % 3;
+  const v = themeStates[themeIdx];
+  document.documentElement.removeAttribute("data-theme");
+  if (v) document.documentElement.setAttribute("data-theme", v);
+  themeBtn.textContent = themeNames[v];
+  renderHeatmap();  /* 侧栏刻度字色取自令牌，重画一次 */
+};
+
+main();
+</script>
+</body>
+</html>
