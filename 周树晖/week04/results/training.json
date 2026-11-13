@@ -1,0 +1,47 @@
+{
+  "config": {
+    "seed": 42,
+    "vocab_size": 4000,
+    "block_size": 128,
+    "d_model": 192,
+    "n_heads": 4,
+    "n_layers": 4,
+    "d_ff": 768,
+    "dropout": 0.1,
+    "batch_size": 64,
+    "epochs": 12,
+    "patience": 3,
+    "learning_rate": 0.0006,
+    "min_learning_rate": 6e-05,
+    "warmup_steps": 100,
+    "weight_decay": 0.01,
+    "gradient_clip": 1.0,
+    "train_ratio": 0.9,
+    "val_ratio": 0.05,
+    "device": "auto"
+  },
+  "environment": {
+    "python": "3.14.4",
+    "torch": "2.12.0+cu130",
+    "numpy": "2.4.4",
+    "device": "cuda",
+    "gpu": "NVIDIA GeForce RTX 5070 Laptop GPU",
+    "precision": "bfloat16 autocast",
+    "seed": 42,
+    "platform": "Windows"
+  },
+  "parameters": 2572416,
+  "initial_val": {
+    "nll": 8.33272147954236,
+    "perplexity": 4157.717311865199,
+    "accuracy": 0.005196446238086376,
+    "tokens": 204178,
+    "correct": 1061
+  },
+  "best_epoch": 12,
+  "epochs_run": 12,
+  "training_seconds": 85.21166899998207,
+  "selection": "minimum validation token NLL",
+  "test_used_for_selection": false,
+  "checkpoint_sha256": "05ec24967dc05c601d5fa2e9ec2b13eacd207899d1b29558e7e46842005cf5ab"
+}
