@@ -1,0 +1,1038 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>shallowSeek · SFT 对话与 Question Mask 实验室</title>
+<style>
+  :root {
+    --navy: #1e3a5f;
+    --blue: #4d6bfe;
+    --teal: #2e86ab;
+    --bg: #f4f6f9;
+    --card: #ffffff;
+    --border: #e2e8f0;
+    --text: #1e293b;
+    --muted: #64748b;
+    --mask-bg: #f1f5f9;
+    --mask-border: #cbd5e1;
+    --mask-text: #475569;
+    --ans-bg: #ecfdf5;
+    --ans-border: #6ee7b7;
+    --ans-text: #065f46;
+    --spec-bg: #eef2ff;
+    --spec-border: #a5b4fc;
+    --spec-text: #3730a3;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", "PingFang SC", sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  header {
+    background: #fff;
+    padding: 10px 20px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.03);
+    z-index: 10;
+  }
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-right: auto;
+  }
+  .logo {
+    width: 34px;
+    height: 34px;
+    border-radius: 9px;
+    background: linear-gradient(135deg, #4d6bfe, #1e3a5f);
+    color: #fff;
+    font-weight: 800;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    letter-spacing: -0.5px;
+    box-shadow: 0 2px 6px rgba(77, 107, 254, 0.28);
+  }
+  .brand-title {
+    font-size: 17px;
+    font-weight: 800;
+    color: var(--navy);
+    letter-spacing: 0.2px;
+  }
+  .brand-sub {
+    font-size: 11.5px;
+    color: var(--muted);
+    display: block;
+  }
+  .model-pill {
+    font-size: 11.5px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: #eef2ff;
+    color: #3730a3;
+    border: 1px solid #c7d2fe;
+    font-family: Consolas, monospace;
+  }
+  .mode-switch {
+    display: flex;
+    background: #eef1f6;
+    border-radius: 999px;
+    padding: 3px;
+  }
+  .mode-switch button {
+    border: none;
+    background: transparent;
+    padding: 5px 12px;
+    border-radius: 999px;
+    cursor: pointer;
+    font-size: 12.5px;
+    color: #475569;
+    font-weight: 500;
+    transition: 0.15s;
+  }
+  .mode-switch button.active {
+    background: var(--blue);
+    color: #fff;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.12);
+  }
+  .btn-clear {
+    border: 1px solid var(--border);
+    background: #fff;
+    color: var(--muted);
+    padding: 5px 11px;
+    border-radius: 8px;
+    font-size: 12px;
+    cursor: pointer;
+  }
+  .btn-clear:hover {
+    border-color: #94a3b8;
+    color: var(--text);
+  }
+
+  /* 主体双栏 */
+  .main-layout {
+    flex: 1;
+    display: grid;
+    grid-template-columns: 1fr 370px;
+    min-height: 0;
+  }
+  @media (max-width: 980px) {
+    .main-layout { grid-template-columns: 1fr; }
+    .side-panel { display: none; }
+  }
+
+  /* 左侧聊天区 */
+  .chat-col {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    border-right: 1px solid var(--border);
+  }
+  #chat {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .welcome-card {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--blue);
+    border-radius: 10px;
+    padding: 14px 18px;
+    font-size: 13px;
+    line-height: 1.6;
+    color: #334155;
+  }
+  .welcome-card h3 {
+    margin: 0 0 6px;
+    font-size: 14.5px;
+    color: var(--navy);
+  }
+  .legend-inline {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 8px;
+    font-size: 12px;
+  }
+  .legend-inline span {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 3px;
+    display: inline-block;
+  }
+
+  .msg {
+    display: flex;
+    flex-direction: column;
+    max-width: 88%;
+  }
+  .msg.user {
+    align-self: flex-end;
+    align-items: flex-end;
+  }
+  .msg.assistant {
+    align-self: flex-start;
+    align-items: flex-start;
+    width: 88%;
+  }
+  .bubble {
+    padding: 10px 14px;
+    border-radius: 12px;
+    white-space: pre-wrap;
+    word-break: break-word;
+    line-height: 1.6;
+    font-size: 14px;
+  }
+  .msg.user .bubble {
+    background: var(--blue);
+    color: #fff;
+    border-bottom-right-radius: 4px;
+  }
+  .msg.assistant .bubble {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-bottom-left-radius: 4px;
+    width: 100%;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+  }
+
+  /* SFT Question Mask 透视面板 */
+  .sft-box {
+    width: 100%;
+    background: #f8fafc;
+    border: 1px solid #cbd5e1;
+    border-left: 3.5px solid #6366f1;
+    border-radius: 8px;
+    padding: 8px 12px;
+    margin-bottom: 8px;
+    font-size: 12px;
+  }
+  .sft-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    user-select: none;
+    color: #4338ca;
+    font-weight: 600;
+  }
+  .sft-header .left {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .sft-body {
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px dashed #cbd5e1;
+  }
+  .sft-body.collapsed { display: none; }
+  .tok-stream {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin-top: 6px;
+    max-height: 150px;
+    overflow-y: auto;
+    padding: 2px;
+  }
+  .t-chip {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    border-radius: 5px;
+    padding: 2px 6px;
+    font-size: 12px;
+    line-height: 1.25;
+    border: 1px solid transparent;
+  }
+  .t-chip .t-top {
+    font-family: "Microsoft YaHei", monospace;
+    font-weight: 600;
+  }
+  .t-chip .t-sub {
+    font-family: Consolas, monospace;
+    font-size: 9.5px;
+    opacity: 0.85;
+  }
+  .t-chip.masked {
+    background: var(--mask-bg);
+    border-color: var(--mask-border);
+    color: var(--mask-text);
+  }
+  .t-chip.bridge {
+    background: var(--spec-bg);
+    border-color: var(--spec-border);
+    color: var(--spec-text);
+  }
+  .t-chip.active {
+    background: var(--ans-bg);
+    border-color: var(--ans-border);
+    color: var(--ans-text);
+  }
+
+  /* 参考答案对比条 */
+  .ref-box {
+    width: 100%;
+    background: #fffbeb;
+    border: 1px solid #fde68a;
+    border-radius: 8px;
+    padding: 7px 11px;
+    margin-top: 6px;
+    font-size: 12.5px;
+    color: #92400e;
+  }
+  .ref-box b { color: #78350f; }
+
+  .meta {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 5px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+  .tag {
+    display: inline-block;
+    padding: 1px 7px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 500;
+  }
+  .tag.stream { background: #e0f2fe; color: #0369a1; }
+  .tag.nostream { background: #fef3c7; color: #b45309; }
+  .tag.greedy { background: #dcfce7; color: #15803d; }
+  .tag.sample { background: #f3e8ff; color: #7e22ce; }
+  .tag.masked { background: #e0e7ff; color: #4338ca; }
+
+  .cursor::after {
+    content: "▋";
+    display: inline-block;
+    margin-left: 2px;
+    animation: blink 1s infinite;
+    color: var(--blue);
+  }
+  @keyframes blink { 50% { opacity: 0; } }
+
+  /* 底部输入栏 */
+  footer {
+    padding: 12px 20px;
+    background: #fff;
+    border-top: 1px solid var(--border);
+  }
+  .input-box {
+    display: flex;
+    gap: 8px;
+  }
+  textarea {
+    flex: 1;
+    resize: none;
+    border: 1px solid #cbd5e1;
+    border-radius: 10px;
+    padding: 9px 12px;
+    font-size: 14px;
+    font-family: inherit;
+    height: 44px;
+    max-height: 120px;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  textarea:focus { border-color: var(--blue); }
+  button.send {
+    background: var(--blue);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: 0 20px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  button.send:hover { background: #3b5bdb; }
+  button.send:disabled { background: #94a3b8; cursor: not-allowed; }
+
+  /* 右侧实验控制台 */
+  .side-panel {
+    background: #fff;
+    overflow-y: auto;
+    padding: 14px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .panel-card {
+    border: 1px solid var(--border);
+    border-radius: 9px;
+    padding: 11px 13px;
+    background: #fcfdff;
+  }
+  .panel-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--navy);
+    margin: 0 0 9px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .panel-title span.sub {
+    font-size: 11px;
+    color: var(--muted);
+    font-weight: 400;
+  }
+  .param-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 7px;
+    font-size: 12px;
+  }
+  .param-row:last-child { margin-bottom: 0; }
+  .param-row label {
+    color: #475569;
+    min-width: 96px;
+  }
+  .param-row input[type=range] {
+    flex: 1;
+    accent-color: var(--blue);
+  }
+  .param-val {
+    font-family: Consolas, monospace;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--blue);
+    min-width: 36px;
+    text-align: right;
+  }
+
+  .sample-btns {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 7px;
+    margin-bottom: 9px;
+  }
+  .sample-btn {
+    border: 1px solid #c7d2fe;
+    background: #eef2ff;
+    color: #3730a3;
+    border-radius: 7px;
+    padding: 6px 8px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.12s;
+  }
+  .sample-btn:hover {
+    background: #e0e7ff;
+  }
+  .preset-list {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    max-height: 210px;
+    overflow-y: auto;
+  }
+  .preset-item {
+    text-align: left;
+    border: 1px solid var(--border);
+    background: #fff;
+    border-radius: 6px;
+    padding: 6px 9px;
+    font-size: 12px;
+    color: #334155;
+    cursor: pointer;
+    transition: 0.12s;
+    line-height: 1.4;
+  }
+  .preset-item:hover {
+    border-color: var(--blue);
+    background: #f8fafc;
+  }
+  .preset-item .p-badge {
+    font-size: 10px;
+    padding: 1px 5px;
+    border-radius: 4px;
+    margin-right: 5px;
+    font-weight: 600;
+  }
+  .preset-item .p-badge.val { background: #dbeafe; color: #1d4ed8; }
+  .preset-item .p-badge.train { background: #dcfce7; color: #15803d; }
+
+  /* 候选概率条 */
+  .cand-list {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+  .cand-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+  }
+  .cand-tok {
+    width: 58px;
+    text-align: right;
+    font-family: "Microsoft YaHei", Consolas, monospace;
+    font-weight: 600;
+    color: var(--text);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .cand-track {
+    flex: 1;
+    height: 16px;
+    background: #f1f5f9;
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .cand-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #93c5fd, var(--blue));
+    border-radius: 4px;
+    transition: width 0.15s;
+  }
+  .cand-prob {
+    width: 46px;
+    text-align: right;
+    font-family: Consolas, monospace;
+    font-size: 11px;
+    color: var(--muted);
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand">
+    <div class="logo">sS</div>
+    <div>
+      <span class="brand-title">shallowSeek</span>
+      <span class="brand-sub">Week 05 · BERT Prefix-LM (问题双向互看 + 回答下三角因果 + Question Loss Masked)</span>
+    </div>
+  </div>
+
+  <span id="modelStatsPill" class="model-pill">加载模型中...</span>
+
+  <div class="mode-switch" title="输出方式：SSE 流式 vs 一次性返回">
+    <button id="btnStream" class="active">流式 SSE</button>
+    <button id="btnNoStream">非流式</button>
+  </div>
+
+  <div class="mode-switch" title="解码选词策略：贪心 (Greedy) vs 采样 (Sample)">
+    <button id="btnGreedy" class="active">贪心解码</button>
+    <button id="btnSample">随机采样</button>
+  </div>
+
+  <button id="btnClear" class="btn-clear">清空对话</button>
+</header>
+
+<div class="main-layout">
+  <!-- 左侧对话区 -->
+  <div class="chat-col">
+    <div id="chat">
+      <div class="welcome-card">
+        <h3>👋 欢迎使用 shallowSeek (基于 BERT 改造的 Prefix-LM SFT 测试台)</h3>
+        <div>
+          本模型以预训练 <code>bert-base-chinese</code> (12层·768维·21,128词表·1.02亿参数) 为底座，在 <code>sft_train.jsonl</code> (3,000 条指令对) 上完成了 <b>SFT 监督微调</b>：<br/>
+          1. <b>Attention Mask 改造 (Prefix-LM)</b>：<b>问题段</b>内部采用<b>双向全可见注意力</b>（充分利用 BERT 双向理解优势），<b>回答段</b>采用<b>下三角因果掩码</b>逐字自回归生成；<br/>
+          2. <b>Question Loss Mask (<code>label = -100</code>)</b>：问题段所有位置的标签均置为 <code>-100</code> 不算梯度，只对<b>回答段 + 结束符 <code>[SEP]</code></b> 计算交叉熵损失。
+        </div>
+        <div class="legend-inline">
+          <span><i class="dot" style="background:#cbd5e1;"></i><b>灰色 Token</b>：问题段 (双向互看 + <code>label = -100</code> 屏蔽 Loss)</span>
+          <span><i class="dot" style="background:#a5b4fc;"></i><b>紫色 Token</b>：<code>[SEP]</code> 回答触发位 (由此开始预测第 1 个回答字)</span>
+          <span><i class="dot" style="background:#6ee7b7;"></i><b>绿色 Token</b>：回答段 (下三角因果生成 + 计入 CrossEntropyLoss)</span>
+        </div>
+      </div>
+    </div>
+
+    <footer>
+      <div class="input-box">
+        <textarea id="input" placeholder="输入测试指令或点击右侧题库抽样，Enter 发送，Shift+Enter 换行..."></textarea>
+        <button id="send" class="send">发送测试</button>
+      </div>
+    </footer>
+  </div>
+
+  <!-- 右侧实验控制台 -->
+  <aside class="side-panel">
+    <div class="panel-card">
+      <div class="panel-title">
+        <span>🎛️ 解码与采样参数</span>
+        <span class="sub" id="decodeModeHint">当前：贪心 argmax</span>
+      </div>
+      <div class="param-row">
+        <label>Temperature (T)</label>
+        <input type="range" id="tempSlider" min="0.1" max="1.5" step="0.05" value="0.5" />
+        <span class="param-val" id="tempVal">0.50</span>
+      </div>
+      <div class="param-row">
+        <label>Top-K</label>
+        <input type="range" id="topkSlider" min="1" max="50" step="1" value="10" />
+        <span class="param-val" id="topkVal">10</span>
+      </div>
+      <div class="param-row">
+        <label>Top-P (核采样)</label>
+        <input type="range" id="toppSlider" min="0.1" max="1.0" step="0.05" value="0.9" />
+        <span class="param-val" id="toppVal">0.90</span>
+      </div>
+      <div class="param-row">
+        <label>重复惩罚</label>
+        <input type="range" id="repSlider" min="1.0" max="1.5" step="0.05" value="1.15" />
+        <span class="param-val" id="repVal">1.15</span>
+      </div>
+      <div class="param-row">
+        <label>最大生成字数</label>
+        <input type="range" id="maxTokSlider" min="16" max="120" step="4" value="80" />
+        <span class="param-val" id="maxTokVal">80</span>
+      </div>
+    </div>
+
+    <div class="panel-card">
+      <div class="panel-title">
+        <span>📚 SFT 题库抽样测试</span>
+        <span class="sub">自动附带参考答案对比</span>
+      </div>
+      <div class="sample-btns">
+        <button class="sample-btn" id="btnRandVal">🎲 随机抽验证集</button>
+        <button class="sample-btn" id="btnRandTrain">🎲 随机抽训练集</button>
+      </div>
+      <div class="preset-list" id="presetList"></div>
+    </div>
+
+    <div class="panel-card">
+      <div class="panel-title">
+        <span>📊 实时下一步候选分布</span>
+        <span class="sub" id="stepIndicator">等待生成...</span>
+      </div>
+      <div class="cand-list" id="candList">
+        <div style="font-size:12px;color:var(--muted);">发送问题后，这里会实时展示 Decoder 每一步预测的 Top-5 候选字概率。</div>
+      </div>
+    </div>
+  </aside>
+</div>
+
+<script>
+let useStream = true;
+let useGreedy = true;
+
+const chatEl = document.getElementById("chat");
+const inputEl = document.getElementById("input");
+const sendBtn = document.getElementById("send");
+const btnStream = document.getElementById("btnStream");
+const btnNoStream = document.getElementById("btnNoStream");
+const btnGreedy = document.getElementById("btnGreedy");
+const btnSample = document.getElementById("btnSample");
+const btnClear = document.getElementById("btnClear");
+const modelStatsPill = document.getElementById("modelStatsPill");
+const decodeModeHint = document.getElementById("decodeModeHint");
+const presetList = document.getElementById("presetList");
+const candList = document.getElementById("candList");
+const stepIndicator = document.getElementById("stepIndicator");
+
+const tempSlider = document.getElementById("tempSlider");
+const topkSlider = document.getElementById("topkSlider");
+const toppSlider = document.getElementById("toppSlider");
+const repSlider = document.getElementById("repSlider");
+const maxTokSlider = document.getElementById("maxTokSlider");
+
+function bindSlider(slider, valId, fixed = 0) {
+  const valEl = document.getElementById(valId);
+  const update = () => {
+    valEl.textContent = fixed > 0 ? Number(slider.value).toFixed(fixed) : slider.value;
+  };
+  slider.addEventListener("input", update);
+  update();
+}
+bindSlider(tempSlider, "tempVal", 2);
+bindSlider(topkSlider, "topkVal", 0);
+bindSlider(toppSlider, "toppVal", 2);
+bindSlider(repSlider, "repVal", 2);
+bindSlider(maxTokSlider, "maxTokVal", 0);
+
+btnStream.onclick = () => {
+  useStream = true;
+  btnStream.classList.add("active");
+  btnNoStream.classList.remove("active");
+};
+btnNoStream.onclick = () => {
+  useStream = false;
+  btnNoStream.classList.add("active");
+  btnStream.classList.remove("active");
+};
+btnGreedy.onclick = () => {
+  useGreedy = true;
+  btnGreedy.classList.add("active");
+  btnSample.classList.remove("active");
+  decodeModeHint.textContent = "当前：贪心 argmax";
+};
+btnSample.onclick = () => {
+  useGreedy = false;
+  btnSample.classList.add("active");
+  btnGreedy.classList.remove("active");
+  decodeModeHint.textContent = "当前：T / Top-K / Top-P";
+};
+
+btnClear.onclick = () => {
+  const welcome = chatEl.querySelector(".welcome-card");
+  chatEl.innerHTML = "";
+  if (welcome) chatEl.appendChild(welcome);
+};
+
+function renderCandidates(stepObj) {
+  if (!stepObj || !stepObj.candidates) return;
+  stepIndicator.textContent = `第 ${stepObj.step} 步 → 选中「${stepObj.raw_token}」`;
+  candList.innerHTML = "";
+  for (const c of stepObj.candidates) {
+    const pct = Math.min(100, Math.max(0, c.prob * 100));
+    const row = document.createElement("div");
+    row.className = "cand-row";
+    row.innerHTML = `
+      <span class="cand-tok"></span>
+      <div class="cand-track"><div class="cand-fill" style="width:${pct.toFixed(1)}%"></div></div>
+      <span class="cand-prob">${pct.toFixed(1)}%</span>
+    `;
+    row.querySelector(".cand-tok").textContent = c.token;
+    candList.appendChild(row);
+  }
+}
+
+function renderSftInspect(sftBox, sftData) {
+  if (!sftBox || !sftData) return;
+  const statsSpan = sftBox.querySelector(".sft-stats");
+  const tokStream = sftBox.querySelector(".tok-stream");
+  statsSpan.textContent = `屏蔽问题: ${sftData.masked_count} tokens (label=-100) · 监督回答: ${sftData.active_count} tokens (${sftData.loss_density_pct}%)`;
+
+  tokStream.innerHTML = "";
+  for (const item of sftData.alignment) {
+    const chip = document.createElement("div");
+    const cls = item.segment === "question" ? "masked" : (item.segment === "bridge" ? "bridge" : "active");
+    chip.className = "t-chip " + cls;
+
+    const top = document.createElement("span");
+    top.className = "t-top";
+    top.textContent = item.x_token;
+
+    const sub = document.createElement("span");
+    sub.className = "t-sub";
+    sub.textContent = item.masked ? "y=-100" : `→${item.target_token}`;
+
+    chip.title = item.masked
+      ? `位置 ${item.pos}: 输入「${item.x_token}」→ 预测「${item.target_token}」，但因属于问题段被置为 -100 (不计入 Loss)`
+      : `位置 ${item.pos}: 输入「${item.x_token}」→ 监督目标 y=「${item.target_token}」(计入 CrossEntropyLoss)`;
+
+    chip.appendChild(top);
+    chip.appendChild(sub);
+    tokStream.appendChild(chip);
+  }
+}
+
+function createMessageElements(role, text, streamMode, greedyMode) {
+  const wrap = document.createElement("div");
+  wrap.className = "msg " + role;
+
+  if (role === "user") {
+    const bubble = document.createElement("div");
+    bubble.className = "bubble";
+    bubble.textContent = text;
+    wrap.appendChild(bubble);
+    chatEl.appendChild(wrap);
+    chatEl.scrollTop = chatEl.scrollHeight;
+    return { bubble };
+  }
+
+  // Assistant 包含: 1) SFT Question Mask 透视盒, 2) 回答气泡, 3) 参考答案对比盒, 4) Meta 计时栏
+  const sftBox = document.createElement("div");
+  sftBox.className = "sft-box";
+  sftBox.innerHTML = `
+    <div class="sft-header">
+      <div class="left"><span>▾</span><span>🛡️ SFT Question Mask (Loss Mask = -100) 序列透视</span></div>
+      <span class="sft-stats" style="font-weight:normal;color:#64748b;">计算中...</span>
+    </div>
+    <div class="sft-body">
+      <div style="color:#475569;margin-bottom:4px;">上行 = 当前输入 token <code>x[t]</code>，下行 = 监督标签 <code>y[t]</code>（问题部分全部 mask 为 <code>-100</code>）：</div>
+      <div class="tok-stream"></div>
+    </div>
+  `;
+  const sftHeader = sftBox.querySelector(".sft-header");
+  const sftBody = sftBox.querySelector(".sft-body");
+  sftHeader.onclick = () => {
+    sftBody.classList.toggle("collapsed");
+  };
+  wrap.appendChild(sftBox);
+
+  const bubble = document.createElement("div");
+  bubble.className = "bubble";
+  bubble.textContent = text;
+  wrap.appendChild(bubble);
+
+  const refBox = document.createElement("div");
+  refBox.className = "ref-box";
+  refBox.style.display = "none";
+  wrap.appendChild(refBox);
+
+  const meta = document.createElement("div");
+  meta.className = "meta";
+  meta.innerHTML = `
+    <span class="tag ${streamMode ? "stream" : "nostream"}">${streamMode ? "流式 SSE" : "非流式"}</span>
+    <span class="tag ${greedyMode ? "greedy" : "sample"}">${greedyMode ? "贪心解码" : "采样解码"}</span>
+    <span class="tag masked">Question Masked (-100)</span>
+    <span class="timer">生成中...</span>
+  `;
+  wrap.appendChild(meta);
+
+  chatEl.appendChild(wrap);
+  chatEl.scrollTop = chatEl.scrollHeight;
+
+  return {
+    bubble,
+    sftBox,
+    refBox,
+    timerEl: meta.querySelector(".timer"),
+  };
+}
+
+function showReference(refBox, refData) {
+  if (!refBox || !refData) return;
+  refBox.style.display = "block";
+  refBox.innerHTML = "";
+  const b = document.createElement("b");
+  b.textContent = `📌 数据集参考答案 (${refData.split})：`;
+  const span = document.createElement("span");
+  span.textContent = refData.output;
+  refBox.appendChild(b);
+  refBox.appendChild(span);
+}
+
+function getParams(question) {
+  return {
+    question,
+    greedy: useGreedy,
+    temperature: parseFloat(tempSlider.value),
+    top_k: parseInt(topkSlider.value, 10),
+    top_p: parseFloat(toppSlider.value),
+    repetition_penalty: parseFloat(repSlider.value),
+    max_new_tokens: parseInt(maxTokSlider.value, 10),
+  };
+}
+
+async function sendNonStream(question, ui) {
+  const t0 = performance.now();
+  const resp = await fetch("/api/chat", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(getParams(question)),
+  });
+  const data = await resp.json();
+  const t1 = performance.now();
+
+  if (data.error) {
+    ui.bubble.textContent = "❌ " + data.error;
+    ui.timerEl.textContent = "失败";
+    return;
+  }
+
+  ui.bubble.textContent = data.content || "(空回复)";
+  if (data.sft_inspect) renderSftInspect(ui.sftBox, data.sft_inspect);
+  if (data.reference) showReference(ui.refBox, data.reference);
+  if (data.steps && data.steps.length > 0) {
+    renderCandidates(data.steps[data.steps.length - 1]);
+  }
+  ui.timerEl.textContent = `一次性返回 · 生成 ${data.steps ? data.steps.length : 0} 步 · 耗时 ${((t1 - t0) / 1000).toFixed(2)}s`;
+}
+
+async function sendStream(question, ui) {
+  const t0 = performance.now();
+  let firstTokenAt = null;
+  let fullContent = "";
+  let stepCount = 0;
+
+  const resp = await fetch("/api/chat/stream", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(getParams(question)),
+  });
+
+  if (!resp.ok || !resp.body) {
+    ui.bubble.textContent = "❌ 请求失败: " + resp.status;
+    ui.timerEl.textContent = "失败";
+    return;
+  }
+
+  ui.bubble.classList.add("cursor");
+  const reader = resp.body.getReader();
+  const decoder = new TextDecoder();
+  let buffer = "";
+
+  while (true) {
+    const { value, done } = await reader.read();
+    if (done) break;
+    buffer += decoder.decode(value, { stream: true });
+
+    let idx;
+    while ((idx = buffer.indexOf("\n\n")) !== -1) {
+      const chunk = buffer.slice(0, idx).trim();
+      buffer = buffer.slice(idx + 2);
+      if (!chunk.startsWith("data:")) continue;
+      const payload = chunk.slice(5).trim();
+      if (payload === "[DONE]") {
+        buffer = "";
+        break;
+      }
+      try {
+        const obj = JSON.parse(payload);
+        if (obj.error) {
+          ui.bubble.classList.remove("cursor");
+          ui.bubble.textContent = "❌ " + obj.error;
+          ui.timerEl.textContent = "失败";
+          return;
+        }
+        if (obj.sft_init) {
+          renderSftInspect(ui.sftBox, obj.sft_init);
+        }
+        if (obj.reference) {
+          showReference(ui.refBox, obj.reference);
+        }
+        if (obj.step) {
+          stepCount = obj.step.step;
+          renderCandidates(obj.step);
+        }
+        if (obj.content) {
+          if (firstTokenAt === null) firstTokenAt = performance.now();
+          fullContent += obj.content;
+          ui.bubble.textContent = fullContent;
+          const elapsed = ((performance.now() - t0) / 1000).toFixed(2);
+          const ttft = ((firstTokenAt - t0) / 1000).toFixed(2);
+          ui.timerEl.textContent = `流式输出中 · 首字 ${ttft}s · 第 ${stepCount} 步 · 已用 ${elapsed}s`;
+          chatEl.scrollTop = chatEl.scrollHeight;
+        }
+        if (obj.sft_inspect) {
+          renderSftInspect(ui.sftBox, obj.sft_inspect);
+        }
+      } catch (e) {
+        console.error("SSE parse error", e);
+      }
+    }
+  }
+
+  ui.bubble.classList.remove("cursor");
+  const total = ((performance.now() - t0) / 1000).toFixed(2);
+  const ttft = firstTokenAt ? ((firstTokenAt - t0) / 1000).toFixed(2) : "-";
+  ui.timerEl.textContent = `流式完成 · 首字 ${ttft}s · 共 ${stepCount} 步 · 总耗时 ${total}s`;
+}
+
+async function onSend(customQuestion = null) {
+  const text = (customQuestion !== null ? customQuestion : inputEl.value).trim();
+  if (!text) return;
+  if (customQuestion === null) inputEl.value = "";
+
+  sendBtn.disabled = true;
+  createMessageElements("user", text, useStream, useGreedy);
+  const ui = createMessageElements("assistant", "", useStream, useGreedy);
+
+  try {
+    if (useStream) {
+      await sendStream(text, ui);
+    } else {
+      await sendNonStream(text, ui);
+    }
+  } catch (e) {
+    ui.bubble.classList.remove("cursor");
+    ui.bubble.textContent = "❌ " + e.message;
+    ui.timerEl.textContent = "失败";
+  } finally {
+    sendBtn.disabled = false;
+    inputEl.focus();
+  }
+}
+
+sendBtn.onclick = () => onSend();
+inputEl.addEventListener("keydown", (e) => {
+  if (e.key === "Enter" && !e.shiftKey) {
+    e.preventDefault();
+    onSend();
+  }
+});
+
+async function drawRandomSample(split) {
+  try {
+    const resp = await fetch(`/api/random_sample?split=${split}`);
+    const data = await resp.json();
+    if (data.instruction) {
+      inputEl.value = data.instruction;
+      onSend(data.instruction);
+    }
+  } catch (e) {
+    console.error(e);
+  }
+}
+
+document.getElementById("btnRandVal").onclick = () => drawRandomSample("val");
+document.getElementById("btnRandTrain").onclick = () => drawRandomSample("train");
+
+// 初始化加载模型信息与预设问题
+async function initInfo() {
+  try {
+    const resp = await fetch("/api/info");
+    const data = await resp.json();
+    if (data.error) {
+      modelStatsPill.textContent = "⚠️ " + data.error;
+      return;
+    }
+    const m = data.meta;
+    modelStatsPill.textContent = `${m.num_layers}L-${m.nhead}H-${m.embed_dim}D | 参数 ${(m.total_params / 1e6).toFixed(2)}M | Val PPL ${m.best_val_ppl} | ${m.device.toUpperCase()}`;
+
+    presetList.innerHTML = "";
+    const addPreset = (item, splitTag, label) => {
+      const btn = document.createElement("button");
+      btn.className = "preset-item";
+      btn.innerHTML = `<span class="p-badge ${splitTag}">${label}</span><span class="p-text"></span>`;
+      btn.querySelector(".p-text").textContent = item.instruction;
+      btn.onclick = () => {
+        inputEl.value = item.instruction;
+        onSend(item.instruction);
+      };
+      presetList.appendChild(btn);
+    };
+
+    if (data.presets && data.presets.val) {
+      data.presets.val.slice(0, 4).forEach((item) => addPreset(item, "val", "验证集"));
+    }
+    if (data.presets && data.presets.train) {
+      data.presets.train.slice(0, 4).forEach((item) => addPreset(item, "train", "训练集"));
+    }
+  } catch (e) {
+    modelStatsPill.textContent = "加载模型元信息失败";
+  }
+}
+
+initInfo();
+</script>
+</body>
+</html>

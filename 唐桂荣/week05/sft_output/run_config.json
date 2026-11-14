@@ -1,0 +1,21 @@
+{
+  "command": "train",
+  "threads": 4,
+  "base_ckpt": "/Users/tangguirong/人工智能/八斗学院/第五周 大模型初探/pretrained/tf_mask.pt",
+  "train_data": "/Users/tangguirong/人工智能/八斗学院/第五周 大模型初探/sft_train/sft_train.jsonl",
+  "val_data": "/Users/tangguirong/人工智能/八斗学院/第五周 大模型初探/sft_train/sft_val.jsonl",
+  "max_len": 128,
+  "answer_prefix": "结论：",
+  "output_dir": "/Users/tangguirong/人工智能/八斗学院/第五周 大模型初探/sft_output",
+  "epochs": 10,
+  "batch_size": 16,
+  "lr": 0.0003,
+  "patience": 3,
+  "train_limit": 0,
+  "val_limit": 0,
+  "max_steps": 0,
+  "format_eval_samples": 20,
+  "log_every": 20,
+  "device": "mps",
+  "seed": 42
+}

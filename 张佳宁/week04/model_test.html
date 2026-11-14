@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>语言模型 · 续写实验室</title>
+  <style>
+    :root{color-scheme:light;--ink:#23352f;--muted:#748079;--green:#25644c;--line:#dfe6de;--paper:#fffefb}
+    *{box-sizing:border-box}body{margin:0;background:#f3f5ef;color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;font-size:15px}
+    button,input,textarea{font:inherit}button{cursor:pointer}button:disabled{cursor:wait;opacity:.55}button:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px solid #92b9a0;outline-offset:3px}
+    .shell{max-width:1180px;margin:auto;padding:32px 28px 50px}header{display:flex;align-items:center;justify-content:space-between;padding-bottom:24px;border-bottom:1px solid var(--line)}
+    .brand{display:flex;align-items:center;gap:12px;font-weight:650}.mark{background:var(--green);color:white;border-radius:12px;width:38px;height:38px;display:grid;place-items:center;font-size:19px}.tag{font:12px ui-monospace,monospace;letter-spacing:1px;color:var(--muted)}
+    .intro{margin:40px 0 28px}.eyebrow{font-size:12px;letter-spacing:2px;color:var(--green);font-weight:650}h1{font-family:"Songti SC",serif;font-size:38px;letter-spacing:1px;margin:10px 0 12px}p{line-height:1.8}.intro p{color:var(--muted);margin:0}
+    .badge{display:inline-flex;align-items:center;gap:8px;background:#e7ede6;border-radius:30px;padding:8px 13px;font-size:12px}.dot{width:7px;height:7px;border-radius:50%;background:#a78045}.ready .dot{background:#2f865d}
+    .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:24px}.stat{background:#eaf0e7;border:1px solid #e0e8dc;border-radius:14px;padding:15px 18px}.stat label{display:block;font-size:12px;color:var(--muted);margin-bottom:7px}.stat strong{font:600 20px ui-monospace,monospace}.stat small{font-size:12px;margin-left:5px;font-weight:400}
+    .workspace{display:grid;grid-template-columns:minmax(260px,.85fr) minmax(0,1.3fr);gap:22px;align-items:start}.panel{background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:24px;box-shadow:0 5px 20px #263b2e04}
+    .panel-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:22px}h2{font-size:17px;margin:0}.number{font:12px ui-monospace,monospace;color:#9aab9c}.field-label{display:flex;justify-content:space-between;font-size:13px;margin-bottom:10px}.hint{font-size:12px;color:var(--muted)}
+    textarea{display:block;width:100%;resize:vertical;min-height:160px;padding:15px;line-height:1.8;color:var(--ink);background:#f8f9f4;border:1px solid var(--line);border-radius:10px}textarea::placeholder{color:#9aab9c}.examples{display:flex;gap:7px;flex-wrap:wrap;margin:12px 0 25px}.chip{border:1px solid var(--line);background:white;border-radius:6px;color:#526359;padding:5px 9px;font-size:12px}.chip:hover{background:#edf3e9}
+    .setting{margin:19px 0}input[type=range]{width:100%;accent-color:var(--green);cursor:pointer}input[type=number]{width:85px;padding:6px 8px;border:1px solid var(--line);border-radius:6px;background:#f8f9f4;color:var(--ink)}.setting .field-label{align-items:center}output{color:var(--green);font-family:ui-monospace,monospace}.setting p{font-size:12px;color:var(--muted);margin:5px 0 0}
+    .primary{width:100%;border:0;background:var(--green);color:white;padding:14px;border-radius:10px;font-weight:600;margin-top:8px}.primary:hover{background:#1c503c}.secondary{border:1px solid var(--line);background:white;padding:6px 10px;border-radius:7px;color:var(--muted);font-size:12px}.note{font-size:12px;color:var(--muted);text-align:center;margin:10px 0 0}
+    .error{padding:12px 14px;background:#fff0e9;border:1px solid #efd6c6;color:#9c4c2e;border-radius:10px;line-height:1.7;margin-bottom:20px;overflow-wrap:anywhere}.error[hidden]{display:none}
+    .result{min-height:250px;line-height:2.1;white-space:pre-wrap;overflow-wrap:anywhere;font-size:17px;font-family:"Songti SC","STSong",serif}.empty{display:flex;min-height:250px;align-items:center;justify-content:center;text-align:center;color:var(--muted);font-family:inherit;font-size:14px;white-space:normal}.empty-symbol{font-size:36px;color:#a3b39d;display:block;margin-bottom:12px}.prefix{color:#8a968c}.continuation{color:#244d3a}.legend{display:flex;gap:18px;font-size:12px;color:var(--muted);border-top:1px solid var(--line);padding-top:15px;margin-top:20px}.legend i{display:inline-block;width:7px;height:7px;border-radius:2px;background:#8a968c;margin-right:6px}.legend .new{background:#244d3a}.timing{margin-left:auto}
+    .probability{margin-top:22px}.probability h2{font-size:15px}.probability p{font-size:12px;color:var(--muted);margin:7px 0 16px}.candidate{display:grid;grid-template-columns:35px 1fr 65px;gap:12px;align-items:center;margin:12px 0;font-size:13px}.track{height:7px;background:#edf1e9;border-radius:5px;overflow:hidden}.bar{height:100%;background:#73987c;border-radius:5px}.percent{text-align:right;font-family:ui-monospace,monospace;color:var(--muted)}.prob-empty{color:var(--muted);font-size:13px;padding:12px 0}
+    footer{margin-top:24px;color:var(--muted);font-size:12px;display:flex;justify-content:space-between;gap:14px;overflow-wrap:anywhere}.loading{animation:pulse 1.3s ease-in-out infinite}@keyframes pulse{50%{opacity:.4}}@media(prefers-reduced-motion:reduce){.loading{animation:none}}
+    @media(max-width:760px){.shell{padding:20px 16px}.intro{margin-top:28px}h1{font-size:30px}.workspace{grid-template-columns:1fr}.stats{grid-template-columns:repeat(2,1fr)}.panel{padding:20px}.tag{display:none}footer{flex-direction:column}}
+  </style>
+</head>
+<body>
+<main class="shell">
+  <header><div class="brand"><span class="mark" aria-hidden="true">文</span>语言模型实验室</div><span class="tag">WEEK 04 / TRANSFORMER</span><span class="badge" id="status"><span class="dot"></span><span id="statusText">正在连接模型</span></span></header>
+  <section class="intro"><div class="eyebrow">从一个开头，看看模型如何续写</div><h1>让文字，接着发生。</h1><p>写下一段前文，观察模型的续写和下一个字的预测概率。</p></section>
+  <div id="error" class="error" role="alert" hidden></div>
+  <section class="stats" aria-label="模型信息"><div class="stat"><label>计算设备</label><strong id="device">—</strong></div><div class="stat"><label>字符词表</label><strong id="vocab">—</strong></div><div class="stat"><label>上下文窗口</label><strong id="context">—</strong><small>字符</small></div><div class="stat"><label>Transformer 层数</label><strong id="layers">—</strong></div></section>
+  <div class="workspace">
+    <form class="panel" id="form"><div class="panel-head"><h2>输入与生成设置</h2><span class="number">01 / INPUT</span></div>
+      <label class="field-label" for="prompt">输入前文<span class="hint" id="count">0 / 4000</span></label><textarea id="prompt" maxlength="4000" placeholder="例如：却说曹操引兵……" required></textarea>
+      <div class="examples"><button type="button" class="chip" data-prompt="却说曹操">却说曹操</button><button type="button" class="chip" data-prompt="孔明曰：">孔明曰：</button><button type="button" class="chip" data-prompt="今天">今天</button></div>
+      <div class="setting"><label class="field-label" for="length">续写长度<output id="lengthValue">100 字</output></label><input id="length" type="range" min="10" max="500" step="10" value="100"></div>
+      <div class="setting"><label class="field-label" for="temperature">采样温度<output id="temperatureValue">0.8</output></label><input id="temperature" type="range" min="0" max="2" step="0.1" value="0.8"><p>0：每次选最高分字符。数值越高，采样通常越发散。</p></div>
+      <div class="setting"><label class="field-label" for="topK">Top-K 候选数量<input id="topK" type="number" min="0" max="1000" step="1" value="20" required></label><p>从最高分的 K 个字符中采样；0 表示使用完整词表。</p></div>
+      <button type="submit" class="primary" id="generate">开始续写 →</button><p class="note">按 Ctrl / ⌘ + Enter 快速生成</p>
+    </form>
+    <div><section class="panel"><div class="panel-head"><h2>续写结果</h2><button class="secondary" id="copy" type="button" disabled>复制全文</button></div><div id="result" class="result empty" role="status" aria-live="polite"><div><span class="empty-symbol" aria-hidden="true">〰</span>文字的下一步，从你的输入开始。<br><span class="hint">生成结果会显示在这里</span></div></div><div class="legend"><span><i></i>输入前文</span><span><i class="new"></i>模型续写</span><span class="timing" id="timing">等待生成</span></div></section>
+      <section class="panel probability"><h2>第一个新字，模型会选谁？</h2><p>原始预测概率前 5 名，未应用温度或 Top-K 调整。</p><div id="candidates" class="prob-empty">生成后查看候选字符的概率分布。</div></section>
+    </div>
+  </div>
+  <footer><span id="checkpoint">等待加载检查点</span><span>本地推理 · 文本续写实验</span></footer>
+</main>
+<script>
+  const $ = id => document.getElementById(id);
+  let busy = false, fullText = '';
+  function showError(message) { $('error').textContent = message; $('error').hidden = !message; }
+  function updateCount() { $('count').textContent = `${Array.from($('prompt').value).length} / 4000`; }
+  async function getStatus() {
+    if (location.protocol === 'file:') { showError('请先运行 python3 web_test.py，再通过 http://127.0.0.1:8000 打开页面。'); $('statusText').textContent = '请启动本地服务'; return; }
+    try {
+      const response = await fetch('/api/status');
+      if (!response.ok) throw new Error('模型服务连接失败，请检查终端。');
+      const data = await response.json();
+      $('status').classList.toggle('ready', data.ready);
+      $('statusText').textContent = data.ready ? '模型已就绪' : '模型未就绪';
+      $('device').textContent = data.device.toUpperCase();
+      $('vocab').textContent = data.ready ? data.vocab_size.toLocaleString() : '—';
+      $('context').textContent = data.context_length ?? '—';
+      $('layers').textContent = data.layers ?? '—';
+      $('checkpoint').textContent = `检查点：${data.checkpoint}`;
+      showError(data.ready ? '' : data.error);
+    } catch (error) { $('statusText').textContent = '服务未连接'; $('status').classList.remove('ready'); showError(error.message); }
+  }
+  $('prompt').addEventListener('input', updateCount);
+  document.querySelectorAll('[data-prompt]').forEach(button => button.addEventListener('click', () => { $('prompt').value = button.dataset.prompt; updateCount(); $('prompt').focus(); }));
+  $('length').addEventListener('input', () => $('lengthValue').textContent = `${$('length').value} 字`);
+  $('temperature').addEventListener('input', () => $('temperatureValue').textContent = Number($('temperature').value).toFixed(1));
+  $('prompt').addEventListener('keydown', event => { if ((event.ctrlKey || event.metaKey) && event.key === 'Enter') { event.preventDefault(); if (!busy) $('form').requestSubmit(); } });
+  $('form').addEventListener('submit', async event => {
+    event.preventDefault();
+    if (busy) return;
+    const prompt = $('prompt').value;
+    if (!prompt.trim()) { showError('请先输入一段文字。'); return; }
+    busy = true; fullText = ''; showError(''); $('generate').disabled = true; $('copy').disabled = true;
+    $('generate').textContent = '正在续写…'; $('result').className = 'result empty loading'; $('result').textContent = '模型正在逐字生成，请稍候…'; $('timing').textContent = '生成中';
+    $('candidates').className = 'prob-empty'; $('candidates').textContent = '正在计算预测概率…';
+    const started = performance.now();
+    const timer = setInterval(() => $('timing').textContent = `${((performance.now()-started)/1000).toFixed(1)} 秒`, 100);
+    try {
+      const response = await fetch('/api/generate', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({prompt, length:Number($('length').value), temperature:Number($('temperature').value), top_k:Number($('topK').value)})});
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || '生成失败，请检查终端。');
+      fullText = data.text; $('result').className = 'result'; $('result').replaceChildren();
+      const prefix = document.createElement('span'); prefix.className = 'prefix'; prefix.textContent = data.prompt;
+      const continuation = document.createElement('span'); continuation.className = 'continuation'; continuation.textContent = data.continuation;
+      $('result').append(prefix, continuation); $('copy').disabled = false;
+      $('timing').textContent = `${data.length} 字 · ${data.seconds.toFixed(2)} 秒`;
+      $('candidates').className = ''; $('candidates').replaceChildren();
+      data.candidates.forEach(candidate => {
+        const row = document.createElement('div'); row.className = 'candidate';
+        const char = document.createElement('span'); char.textContent = candidate.char === '\n' ? '换行' : candidate.char === ' ' ? '空格' : candidate.char;
+        const track = document.createElement('div'); track.className = 'track';
+        const bar = document.createElement('div'); bar.className = 'bar'; bar.style.width = `${candidate.probability * 100}%`; track.append(bar);
+        const percent = document.createElement('span'); percent.className = 'percent'; percent.textContent = `${(candidate.probability * 100).toFixed(1)}%`;
+        row.append(char, track, percent); $('candidates').append(row);
+      });
+      if (data.truncated) showError('输入超过上下文窗口，模型已使用最后一段文字作为生成起点；完整前文仍保留在结果中。');
+      // 服务启动时可以没有权重；首次成功生成后刷新模型信息。
+      if (!$('status').classList.contains('ready')) getStatus();
+    } catch (error) {
+      showError(error.message); $('result').className = 'result empty'; $('result').textContent = '本次未生成结果，请调整输入或检查模型后重试。'; $('timing').textContent = '生成未完成';
+      $('candidates').className = 'prob-empty'; $('candidates').textContent = '暂无预测结果。';
+    } finally { clearInterval(timer); busy = false; $('generate').disabled = false; $('generate').textContent = '开始续写 →'; }
+  });
+  $('copy').addEventListener('click', async () => { try { await navigator.clipboard.writeText(fullText); $('copy').textContent = '已复制'; setTimeout(() => $('copy').textContent = '复制全文', 1500); } catch { showError('无法自动复制，请直接选中结果复制。'); } });
+  getStatus();
+</script>
+</body>
+</html>

@@ -1,0 +1,68 @@
+{
+  "checkpoint_sha256": "05ec24967dc05c601d5fa2e9ec2b13eacd207899d1b29558e7e46842005cf5ab",
+  "best_epoch": 12,
+  "evaluation_device": "cuda",
+  "target_policy": "all characters including newline and UNK; exclude padding; each target counted once",
+  "transformer": {
+    "train": {
+      "nll": 3.271823867083438,
+      "perplexity": 26.359371517851443,
+      "accuracy": 0.39200790705862976,
+      "tokens": 3709091,
+      "correct": 1453993
+    },
+    "val": {
+      "nll": 3.431582512792147,
+      "perplexity": 30.925544115119646,
+      "accuracy": 0.381211491933509,
+      "tokens": 204178,
+      "correct": 77835
+    },
+    "test": {
+      "nll": 3.446231055931954,
+      "perplexity": 31.381892541785096,
+      "accuracy": 0.37957180870541707,
+      "tokens": 204815,
+      "correct": 77742
+    }
+  },
+  "baselines": {
+    "smoothing_alpha": 0.1,
+    "vocab_size": 4000,
+    "pad_excluded": true,
+    "splits": {
+      "val": {
+        "uniform": {
+          "nll": 8.293799608846818,
+          "perplexity": 3999
+        },
+        "unigram": {
+          "nll": 6.368389324214868,
+          "perplexity": 583.1178582863408,
+          "accuracy": 0.06013380481736524
+        },
+        "bigram": {
+          "nll": 4.339339249104771,
+          "perplexity": 76.6568715042588,
+          "accuracy": 0.24031482334041865
+        }
+      },
+      "test": {
+        "uniform": {
+          "nll": 8.293799608846818,
+          "perplexity": 3999
+        },
+        "unigram": {
+          "nll": 6.3796452297768935,
+          "perplexity": 589.7184559943306,
+          "accuracy": 0.05994678124160828
+        },
+        "bigram": {
+          "nll": 4.3497578177987695,
+          "perplexity": 77.45970129252012,
+          "accuracy": 0.2392061128335327
+        }
+      }
+    }
+  }
+}

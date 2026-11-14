@@ -1,0 +1,2 @@
+# 训练出来的 BERT 模型约 400MB，超过 GitHub 单文件 100MB 的限制，不提交
+checkpoints/

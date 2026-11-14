@@ -1,0 +1,82 @@
+{
+  "checkpoint_sha256": "05ec24967dc05c601d5fa2e9ec2b13eacd207899d1b29558e7e46842005cf5ab",
+  "samples": [
+    {
+      "prompt": "今天天气",
+      "normalized_prompt": "今天天气",
+      "continuation": "怎么样",
+      "full_text": "今天天气怎么样",
+      "generated_characters": 3,
+      "stop_reason": "newline",
+      "temperature": 0.8,
+      "top_k": 40,
+      "seed": 42
+    },
+    {
+      "prompt": "我想学习",
+      "normalized_prompt": "我想学习",
+      "continuation": "英语单词。",
+      "full_text": "我想学习英语单词。",
+      "generated_characters": 5,
+      "stop_reason": "newline",
+      "temperature": 0.8,
+      "top_k": 40,
+      "seed": 42
+    },
+    {
+      "prompt": "人工智能",
+      "normalized_prompt": "人工智能",
+      "continuation": "手机号码怎么设置",
+      "full_text": "人工智能手机号码怎么设置",
+      "generated_characters": 8,
+      "stop_reason": "newline",
+      "temperature": 0.8,
+      "top_k": 40,
+      "seed": 42
+    },
+    {
+      "prompt": "请问",
+      "normalized_prompt": "请问",
+      "continuation": "您的姓名和您可以电脑端操作绑定支付宝账户,是否可以的",
+      "full_text": "请问您的姓名和您可以电脑端操作绑定支付宝账户,是否可以的",
+      "generated_characters": 26,
+      "stop_reason": "newline",
+      "temperature": 0.8,
+      "top_k": 40,
+      "seed": 42
+    },
+    {
+      "prompt": "我们可以",
+      "normalized_prompt": "我们可以",
+      "continuation": "给我找回来吧",
+      "full_text": "我们可以给我找回来吧",
+      "generated_characters": 6,
+      "stop_reason": "newline",
+      "temperature": 0.8,
+      "top_k": 40,
+      "seed": 42
+    },
+    {
+      "prompt": "中国的",
+      "normalized_prompt": "中国的",
+      "continuation": "中国梦想是什么意思",
+      "full_text": "中国的中国梦想是什么意思",
+      "generated_characters": 9,
+      "stop_reason": "newline",
+      "temperature": 0.8,
+      "top_k": 40,
+      "seed": 42
+    },
+    {
+      "prompt": "我想学习",
+      "normalized_prompt": "我想学习",
+      "continuation": "英语",
+      "full_text": "我想学习英语",
+      "generated_characters": 2,
+      "stop_reason": "newline",
+      "temperature": 0,
+      "top_k": 0,
+      "seed": 42
+    }
+  ]
+}
